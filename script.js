@@ -2,7 +2,8 @@
  * PORTFÓLIO — LAURA BRILHANTE TORRANO
  * JavaScript puro, sem frameworks.
  *
- * 1. Portal: Céu noturno animado (canvas de estrelas) + botão de entrada
+ * 0. Fundo: céu estrelado fixó em todas as telas
+ * 1. Portal: entrada no portfólio e retorno ao céu
  * 2. Navegação entre páginas independentes
  * 3. Menu mobile responsivo
  * 4. Alternador de tema escuro / claro
@@ -11,6 +12,7 @@
  */
 
 document.addEventListener('DOMContentLoaded', () => {
+  initBgStars();
   initNightSky();
   initNavigation();
   initMobileMenu();
@@ -20,23 +22,28 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /* ==========================================================================
-   1. PORTAL — CÉU NOTURNO ANIMADO
-   O nome já aparece diretamente. O canvas só anima as estrelas de fundo.
+   0. CÉU ESTRELADO FIXO — FUNDO DE TODAS AS TELAS
+   Um canvas position:fixed com z-index 0 cobre toda a tela continuamente.
+   Estrelas distribuídas de forma natural, cintilando suavemente.
+   Não há grade, textura ou padrão repetitivo.
    ========================================================================== */
-function initNightSky() {
-  const portal      = document.getElementById('nightSkyPortal');
-  const canvas      = document.getElementById('nightSkyCanvas');
-  const enterBtn    = document.getElementById('revealedEnterBtn');
-  const returnBtn   = document.getElementById('portalReturnBtn');
-  const footerBtn   = document.getElementById('footerSkyBtn');
-
-  if (!portal || !canvas) return;
+function initBgStars() {
+  const canvas = document.getElementById('bgStarsCanvas');
+  if (!canvas) return;
 
   const ctx = canvas.getContext('2d');
   let dpr = Math.min(window.devicePixelRatio || 1, 2);
   let W = 0, H = 0;
   const stars = [];
-  let animFrame;
+
+  // Paleta de estrelas: tons neutros fríos, sem cores sábicas
+  const palette = [
+    'rgba(255,255,255,',
+    'rgba(220,232,255,',
+    'rgba(210,230,255,',
+    'rgba(255,248,230,',
+    'rgba(200,220,255,',
+  ];
 
   function resize() {
     dpr = Math.min(window.devicePixelRatio || 1, 2);
@@ -44,97 +51,122 @@ function initNightSky() {
     H = window.innerHeight;
     canvas.width  = W * dpr;
     canvas.height = H * dpr;
+    canvas.style.width  = W + 'px';
+    canvas.style.height = H + 'px';
     ctx.setTransform(1, 0, 0, 1, 0, 0);
     ctx.scale(dpr, dpr);
-    generateStars();
+    buildStars();
   }
 
-  function generateStars() {
+  function buildStars() {
     stars.length = 0;
-    const count = Math.floor(Math.max(80, Math.min(180, (W * H) / 9000)));
-    const palette = ['#FFFFFF', '#FFF4D6', '#EAF0FF', '#FFE4EE', '#D4E8FF'];
+    // Densidade modesta: ~1 estrela por 8000px² — não excessivo
+    const count = Math.floor(Math.max(60, Math.min(160, (W * H) / 8000)));
 
     for (let i = 0; i < count; i++) {
+      // Distribuição não-uniforme: mais estrelas no terço superior (como um céu real)
+      const yRand = Math.pow(Math.random(), 0.7); // enviesado para o topo
       stars.push({
-        x: Math.random() * W,
-        y: Math.random() * H,
-        r: Math.random() * 1.4 + 0.5,
-        baseAlpha: Math.random() * 0.55 + 0.2,
-        speed: Math.random() * 1.6 + 0.7,
-        phase: Math.random() * Math.PI * 2,
-        color: palette[Math.floor(Math.random() * palette.length)],
-        hasRays: Math.random() > 0.85,
+        x:         Math.random() * W,
+        y:         yRand * H,
+        r:         Math.random() * 1.2 + 0.35,           // 0.35 — 1.55 px
+        color:     palette[Math.floor(Math.random() * palette.length)],
+        baseAlpha: Math.random() * 0.45 + 0.18,          // base discreta
+        amp:       Math.random() * 0.18 + 0.04,          // amplitude do cintilar
+        speed:     Math.random() * 0.9 + 0.35,           // ritmo lento
+        phase:     Math.random() * Math.PI * 2,
+        hasCross:  Math.random() > 0.88,                 // ~12% com raios
       });
     }
   }
 
-  function render(now) {
-    ctx.clearRect(0, 0, W, H);
+  function drawFrame(now) {
     const t = now * 0.001;
 
+    // Fundo azul-marinho sólido e profundo — sem gradientes chamativos
+    ctx.fillStyle = '#060D1C';
+    ctx.fillRect(0, 0, W, H);
+
+    // Vignette suave nas bordas para dar profundidade sem artifícios
+    const vignette = ctx.createRadialGradient(
+      W / 2, H / 2, H * 0.25,
+      W / 2, H / 2, H * 0.85
+    );
+    vignette.addColorStop(0, 'rgba(0,0,0,0)');
+    vignette.addColorStop(1, 'rgba(0,4,14,0.55)');
+    ctx.fillStyle = vignette;
+    ctx.fillRect(0, 0, W, H);
+
+    // Estrelas
     for (const s of stars) {
-      const alpha = Math.max(0.08, Math.min(1,
-        s.baseAlpha + Math.sin(t * s.speed + s.phase) * 0.22
-      ));
-      ctx.globalAlpha = alpha;
-      ctx.fillStyle   = s.color;
+      const alpha = Math.min(1,
+        s.baseAlpha + Math.sin(t * s.speed + s.phase) * s.amp
+      );
+
+      ctx.globalAlpha = Math.max(0.05, alpha);
+      ctx.fillStyle   = s.color + alpha.toFixed(2) + ')';
       ctx.beginPath();
       ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
       ctx.fill();
 
-      if (s.hasRays && alpha > 0.55) {
-        ctx.strokeStyle = s.color;
-        ctx.lineWidth   = 0.5;
+      // Raios sutis em estrelas maiores
+      if (s.hasCross && s.r > 0.8 && alpha > 0.45) {
+        ctx.strokeStyle = s.color + (alpha * 0.35).toFixed(2) + ')';
+        ctx.lineWidth   = 0.4;
         ctx.beginPath();
-        ctx.moveTo(s.x - s.r * 2.5, s.y);
-        ctx.lineTo(s.x + s.r * 2.5, s.y);
-        ctx.moveTo(s.x, s.y - s.r * 2.5);
-        ctx.lineTo(s.x, s.y + s.r * 2.5);
+        ctx.moveTo(s.x - s.r * 2.8, s.y);
+        ctx.lineTo(s.x + s.r * 2.8, s.y);
+        ctx.moveTo(s.x, s.y - s.r * 2.8);
+        ctx.lineTo(s.x, s.y + s.r * 2.8);
         ctx.stroke();
       }
     }
 
     ctx.globalAlpha = 1;
-    animFrame = requestAnimationFrame(render);
+    requestAnimationFrame(drawFrame);
   }
 
   resize();
-  window.addEventListener('resize', resize);
-  animFrame = requestAnimationFrame(render);
+  // Redimensiona com debounce leve para evitar trabalho excessivo
+  let resizeTimer;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(resize, 150);
+  });
 
-  // Entrar no portfólio
-  function openPortfolio() {
-    document.body.classList.add('portal-opened');
-    cancelAnimationFrame(animFrame); // Para o loop quando não visível
+  requestAnimationFrame(drawFrame);
+}
+
+
+/* ==========================================================================
+   1. PORTAL — ENTRADA NO PORTFÓLIO
+   ========================================================================== */
+function initNightSky() {
+  const portal    = document.getElementById('nightSkyPortal');
+  const enterBtn  = document.getElementById('revealedEnterBtn');
+  const returnBtn = document.getElementById('portalReturnBtn');
+  const footerBtn = document.getElementById('footerSkyBtn');
+
+  if (!portal) return;
+
+  // O nightSkyCanvas interno é transparente (bgStarsCanvas já cobre o fundo)
+  const portalCanvas = document.getElementById('nightSkyCanvas');
+  if (portalCanvas) {
+    portalCanvas.style.display = 'none'; // canvas do portal não precisa mais de estrelas
   }
 
-  // Voltar ao portal
+  function openPortfolio() {
+    document.body.classList.add('portal-opened');
+  }
+
   function closePortfolio() {
     document.body.classList.remove('portal-opened');
-    animFrame = requestAnimationFrame(render);
     window.scrollTo({ top: 0 });
   }
 
-  if (enterBtn) {
-    enterBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      openPortfolio();
-    });
-  }
-
-  if (returnBtn) {
-    returnBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      closePortfolio();
-    });
-  }
-
-  if (footerBtn) {
-    footerBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      closePortfolio();
-    });
-  }
+  if (enterBtn)  enterBtn.addEventListener('click',  (e) => { e.preventDefault(); openPortfolio(); });
+  if (returnBtn) returnBtn.addEventListener('click', (e) => { e.preventDefault(); closePortfolio(); });
+  if (footerBtn) footerBtn.addEventListener('click', (e) => { e.preventDefault(); closePortfolio(); });
 }
 
 /* ==========================================================================

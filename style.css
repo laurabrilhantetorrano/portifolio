@@ -7,61 +7,69 @@
 
 /* --- 1. Design Tokens & Variáveis CSS --- */
 :root {
-  /* Paleta Base / Tema Escuro (Padrão) */
-  --color-primary: #FF63F8;
-  --color-accent: #FF6B8C;
+  /* Paleta Celestial Noturna / Tema Escuro (Padrão) */
+  --color-bg: #050B18;
+  --color-surface: #0A1326;
+  --color-surface-hover: #0E1B36;
+  --color-surface-card: #0A1326;
+  --color-text: #F4F6FC;
+  --color-text-muted: #8E9AB8;
+  --color-text-dim: #5E6984;
+  --color-gold: #FFD166;
+  --color-gold-hover: #FFE082;
+  --color-primary: #FFD166;
+  --color-accent: #FF63F8;
   --color-highlight: #FFE0E8;
-  --color-bg: #0E0711;
-  --color-surface: #170E1A;
-  --color-surface-hover: #221526;
-  --color-surface-card: rgba(23, 14, 26, 0.82);
-  --color-text: #FBF4FA;
-  --color-text-muted: #B8A8BA;
-  --color-border: rgba(255, 99, 248, 0.16);
-  --color-border-subtle: rgba(251, 244, 250, 0.08);
-  --color-border-hover: rgba(255, 99, 248, 0.45);
-  --color-ink: #0E0711;
+  --color-rose: #FF63F8;
+  --color-rose-subtle: rgba(255, 99, 248, 0.12);
+  --color-border: rgba(255, 255, 255, 0.08);
+  --color-border-subtle: rgba(255, 255, 255, 0.04);
+  --color-border-hover: rgba(255, 209, 102, 0.35);
+  --color-ink: #050B18;
   
   /* Status */
   --color-online: #00E676;
   --color-error: #FF4D70;
 
   /* Tipografia */
-  --font-serif: 'Cormorant Garamond', 'Syne', Georgia, serif;
-  --font-display: 'Syne', -apple-system, BlinkMacSystemFont, sans-serif;
-  --font-gothic: 'UnifrakturMaguntia', cursive;
+  --font-serif: 'Cormorant Garamond', Georgia, serif;
+  --font-display: 'Cormorant Garamond', Georgia, serif;
   --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-tech: 'Space Grotesk', monospace;
 
   /* Dimensões */
-  --header-height: 76px;
-  --max-width: 1280px;
-  --radius-sm: 6px;
-  --radius-md: 12px;
-  --radius-lg: 18px;
+  --header-height: 70px;
+  --max-width: 1200px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
   --radius-pill: 9999px;
 
-  /* Curvas e Animações */
+  /* Curvas e Transições */
   --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
-  --ease-elastic: cubic-bezier(0.34, 1.56, 0.64, 1);
   --transition-fast: 0.2s ease;
   --transition-normal: 0.3s var(--ease-out-expo);
 }
 
-/* Modo Claro / Vibrante (Alternativa à paleta clássica) */
+/* Modo Claro Editorial (Papel refinado, leitura confortável e toques dourados) */
 [data-theme="brand"] {
-  --color-primary: #D81B85;
-  --color-accent: #FF6B8C;
-  --color-highlight: #1B071A;
-  --color-bg: #FCF4F7;
+  --color-bg: #F8F9FC;
   --color-surface: #FFFFFF;
-  --color-surface-hover: #FFF1F5;
-  --color-surface-card: rgba(255, 255, 255, 0.92);
-  --color-text: #190518;
-  --color-text-muted: #664B62;
-  --color-border: rgba(216, 27, 133, 0.18);
-  --color-border-subtle: rgba(25, 5, 24, 0.09);
-  --color-border-hover: rgba(216, 27, 133, 0.45);
+  --color-surface-hover: #F0F3FA;
+  --color-surface-card: #FFFFFF;
+  --color-text: #0D1424;
+  --color-text-muted: #58637A;
+  --color-text-dim: #8E9AB8;
+  --color-gold: #B8860B;
+  --color-gold-hover: #996F07;
+  --color-primary: #B8860B;
+  --color-accent: #D81B85;
+  --color-highlight: #1A0D18;
+  --color-rose: #D81B85;
+  --color-rose-subtle: rgba(216, 27, 133, 0.08);
+  --color-border: rgba(13, 20, 36, 0.08);
+  --color-border-subtle: rgba(13, 20, 36, 0.04);
+  --color-border-hover: rgba(184, 134, 11, 0.35);
   --color-ink: #FFFFFF;
 }
 

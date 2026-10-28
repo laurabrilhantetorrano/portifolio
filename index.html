@@ -3,56 +3,38 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Laura Brilhante Torrano — Portfólio de Tecnologia</title>
+  <title>Laura Brilhante Torrano — Portfólio</title>
   <meta name="description" content="Portfólio de Laura Brilhante Torrano. Estudante do ensino médio técnico em TI, com foco em desenvolvimento de software e rumo à Engenharia de Software e da Computação.">
   
-  <!-- Favicon SVG com monograma gótico -->
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2222%22 fill=%22%23120713%22/><text y=%2268%22 x=%2250%22 font-size=%2260%22 font-family=%22serif%22 font-weight=%22bold%22 text-anchor=%22middle%22 fill=%22%23FF63F8%22>𝕷</text></svg>">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%23060C1A%22/><text y=%2268%22 x=%2250%22 font-size=%2256%22 font-family=%22serif%22 font-weight=%22400%22 text-anchor=%22middle%22 fill=%22%23D4A843%22>L</text></svg>">
 
-  <!-- Google Fonts: Cormorant Garamond (sofisticação editorial e intimista), Syne, UnifrakturMaguntia, Plus Jakarta Sans, Space Grotesk -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@700;800&family=UnifrakturMaguntia&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;1,400&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <!-- Custom Cursor Fluido (Inspirado em Igloo.inc, desativa em touch) -->
+  <!-- Cursor Personalizado -->
   <div class="custom-cursor" id="customCursor" aria-hidden="true">
     <div class="cursor-dot" id="cursorDot"></div>
     <div class="cursor-ring" id="cursorRing"></div>
   </div>
 
-  <!-- Atmosfera Sutil de Fundo -->
+  <!-- Fundo sutil -->
   <div class="ambient-grid" aria-hidden="true"></div>
   <div class="ambient-glow" aria-hidden="true"></div>
 
-  <!-- ========================================================================
-       TELA INICIAL: CÉU NOTURNO & DESENHO INTERATIVO DA ESTRELA
-       Exibe exclusivamente um céu noturno profundo com estrelas cintilantes e a instrução:
-       "Desenhe uma estrela no céu ✨". O nome LAURA BRILHANTE TORRANO é revelado
-       somente quando a estrela de cinco pontas for 100% desenhada e reconhecida.
-       ======================================================================== -->
-  <section class="night-sky-portal" id="nightSkyPortal" aria-label="Céu Noturno Interativo - Laura Brilhante Torrano">
-    <!-- Canvas em tela cheia para o céu estrelado, estrelas cintilantes, rastro luminoso e partículas -->
+  <!-- ================================================================
+       PORTAL — CÉU NOTURNO COM NOME
+       O nome já aparece diretamente, sem necessidade de desenhar.
+       ================================================================ -->
+  <section class="night-sky-portal" id="nightSkyPortal" aria-label="Céu Noturno — Laura Brilhante Torrano">
     <canvas id="nightSkyCanvas" class="night-sky-canvas"></canvas>
 
-    <!-- Instrução central discreta e poética que desaparece ao começar a desenhar -->
-    <div class="sky-instruction-box" id="skyInstructionBox">
-      <div class="sky-instruction-sparkle" aria-hidden="true">✦</div>
-      <p class="sky-instruction-text" id="skyInstructionText">Desenhe uma estrela no céu ✨</p>
-      <span class="sky-instruction-sub">Em um único traço contínuo</span>
-    </div>
-
-    <!-- HUD de progresso real e discreto (0% a 100%) -->
-    <div class="sky-progress-hud" id="skyProgressHud" aria-live="polite">
-      <span class="sky-progress-icon" aria-hidden="true">✦</span>
-      <span class="sky-progress-val" id="skyProgressVal">0%</span>
-    </div>
-
-    <!-- Container da Revelação Mágica aos 100% (Permanece oculto até a conclusão da estrela) -->
-    <div class="sky-revealed-container" id="skyRevealedContainer" aria-hidden="true">
+    <!-- Nome revelado diretamente sobre o céu -->
+    <div class="sky-revealed-container is-active" id="skyRevealedContainer">
       <div class="revealed-celestial-burst" aria-hidden="true"></div>
       
       <h1 class="revealed-name" id="revealedName">
@@ -61,64 +43,51 @@
         <span class="name-part">TORRANO</span>
       </h1>
 
-      <p class="revealed-tagline">Estudante de Tecnologia · Rumo à Engenharia de Software</p>
+      <p class="revealed-tagline">Estudante de TI · Futura Engenheira de Software</p>
 
-      <!-- Botão para explorar o restante do portfólio -->
-      <button class="revealed-enter-btn" id="revealedEnterBtn" type="button" aria-label="Explorar o portfólio de Laura Brilhante Torrano">
-        <span>Explorar Portfólio</span>
+      <button class="revealed-enter-btn" id="revealedEnterBtn" type="button">
         <span class="enter-btn-star" aria-hidden="true">✦</span>
+        <span>Explorar Portfólio</span>
       </button>
     </div>
-
-    <!-- Botão discreto para limpar traço e tentar novamente -->
-    <button class="sky-reset-btn" id="skyResetBtn" type="button" aria-label="Limpar desenho e tentar novamente" title="Limpar traço">
-      <span class="reset-icon" aria-hidden="true">↺</span>
-      <span class="reset-text">Limpar traço</span>
-    </button>
   </section>
 
-  <!-- ========================================================================
-       HEADER / MENU FIXO SUPERIOR
-       ======================================================================== -->
+  <!-- ================================================================
+       HEADER / MENU FIXO
+       ================================================================ -->
   <header class="site-header" id="siteHeader">
     <div class="header-inner">
       
-      <!-- Marca pessoal elegante e autêntica -->
-      <a href="#hero" class="brand-link" id="brandLink" aria-label="Laura Brilhante Torrano - Início">
+      <a href="#hero" class="brand-link" id="brandLink" aria-label="Laura Brilhante Torrano — Início">
         <span class="brand-star" aria-hidden="true">✦</span>
         <span class="brand-name">Laura Brilhante Torrano</span>
       </a>
 
-      <!-- Status sutil de formação -->
       <div class="header-status" id="headerStatus">
         <span class="status-dot" aria-hidden="true"></span>
-        <span class="status-text">Ensino Médio Técnico em TI</span>
+        <span class="status-text">Técnico em TI</span>
       </div>
 
-      <!-- Ações: Navegação Desktop + Retorno ao Céu + Alternador de Tema -->
       <div class="header-actions">
         <nav class="nav-menu" id="navMenu" aria-label="Navegação principal">
           <a href="#hero" class="nav-link active" data-page="hero" id="navHero">Início</a>
-          <a href="#sobre" class="nav-link" data-page="sobre" id="navSobre">Sobre mim</a>
+          <a href="#sobre" class="nav-link" data-page="sobre" id="navSobre">Sobre</a>
           <a href="#projetos" class="nav-link" data-page="projetos" id="navProjetos">Projetos</a>
           <a href="#habilidades" class="nav-link" data-page="habilidades" id="navHabilidades">Habilidades</a>
           <a href="#contato" class="nav-link" data-page="contato" id="navContato">Contato</a>
         </nav>
 
-        <!-- Botão para revisitar o céu estrelado -->
-        <button class="portal-return-btn" id="portalReturnBtn" type="button" aria-label="Voltar para a tela do céu estrelado" title="Voltar ao céu estrelado">
+        <button class="portal-return-btn" id="portalReturnBtn" type="button" aria-label="Voltar ao céu noturno" title="Voltar ao céu noturno">
           <span class="portal-star-icon" aria-hidden="true">✨</span>
-          <span class="portal-btn-text">Céu Noturno</span>
+          <span class="portal-btn-text">Céu</span>
         </button>
 
-        <!-- Alternador de Tema Claro / Escuro -->
-        <button class="theme-toggle-btn" id="themeToggleBtn" type="button" aria-label="Alternar tema claro/escuro" title="Alternar tema">
+        <button class="theme-toggle-btn" id="themeToggleBtn" type="button" aria-label="Alternar tema" title="Alternar tema">
           <span class="theme-icon" aria-hidden="true">◐</span>
           <span class="theme-label" id="themeLabel">Modo Claro</span>
         </button>
 
-        <!-- Botão Hambúrguer Mobile -->
-        <button class="mobile-toggle-btn" id="mobileMenuBtn" type="button" aria-label="Abrir menu de navegação" aria-expanded="false" aria-controls="mobileNavDrawer">
+        <button class="mobile-toggle-btn" id="mobileMenuBtn" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="mobileNavDrawer">
           <span class="toggle-bar"></span>
           <span class="toggle-bar"></span>
           <span class="toggle-bar"></span>
@@ -127,11 +96,11 @@
 
     </div>
 
-    <!-- Gaveta / Menu de Navegação Mobile -->
+    <!-- Menu Mobile -->
     <div class="mobile-nav-drawer" id="mobileNavDrawer" aria-hidden="true">
       <nav class="mobile-nav-links" aria-label="Navegação mobile">
         <a href="#hero" class="mobile-nav-link active" data-page="hero">Início</a>
-        <a href="#sobre" class="mobile-nav-link" data-page="sobre">Sobre mim</a>
+        <a href="#sobre" class="mobile-nav-link" data-page="sobre">Sobre</a>
         <a href="#projetos" class="mobile-nav-link" data-page="projetos">Projetos</a>
         <a href="#habilidades" class="mobile-nav-link" data-page="habilidades">Habilidades</a>
         <a href="#contato" class="mobile-nav-link" data-page="contato">Contato</a>
@@ -142,22 +111,17 @@
     </div>
   </header>
 
-  <!-- ========================================================================
-       CONTEÚDO PRINCIPAL: PÁGINAS INDEPENDENTES
-       Composições livres, tipografia cuidadosa e sem cartões repetitivos
-       ======================================================================== -->
+  <!-- ================================================================
+       CONTEÚDO PRINCIPAL
+       ================================================================ -->
   <main id="mainContent">
 
-    <!-- ====================================================================
-         PÁGINA 1: INÍCIO / HERO
-         Apresentação direta, acolhedora e autêntica
-         ==================================================================== -->
-    <section class="page-view is-active" id="hero" aria-label="Página Inicial - Apresentação">
+    <!-- PÁGINA 1: INÍCIO -->
+    <section class="page-view is-active" id="hero" aria-label="Página Inicial">
       <div class="page-container hero-editorial-container">
 
         <div class="hero-split-layout">
           
-          <!-- Coluna Principal: Proposta e Apresentação -->
           <div class="hero-main-column">
             <span class="section-kicker">Portfólio &amp; Trajetória Técnica</span>
             <h1 class="hero-editorial-title">
@@ -183,7 +147,6 @@
             </div>
           </div>
 
-          <!-- Coluna Lateral: Resumo de Foco (Linhas tipográficas, sem cartões pesados) -->
           <aside class="hero-sidebar-column">
             <div class="editorial-summary-block">
               <h2 class="sidebar-heading">Em resumo</h2>
@@ -215,12 +178,9 @@
       </div>
     </section>
 
-    <!-- ====================================================================
-         PÁGINA 2: SOBRE MIM
-         Composição livre, humana e reflexiva
-         ==================================================================== -->
-    <section class="page-view" id="sobre" aria-label="Página Sobre Laura Brilhante Torrano">
-      <div class="page-container about-editorial-container">
+    <!-- PÁGINA 2: SOBRE MIM -->
+    <section class="page-view" id="sobre" aria-label="Sobre Laura Brilhante Torrano">
+      <div class="page-container">
 
         <header class="page-intro-header">
           <span class="section-kicker">Sobre mim</span>
@@ -231,7 +191,6 @@
 
         <div class="about-two-columns">
           
-          <!-- Narrativa Pessoal e Direta -->
           <div class="about-story-col">
             <p class="lead-paragraph">
               Durante o curso técnico em TI, descobri que programar não é apenas memorizar sintaxes, mas exercitar a capacidade de modelar problemas reais através de regras bem estruturadas.
@@ -247,7 +206,6 @@
             </p>
           </div>
 
-          <!-- Lista Tipográfica de Foco (sem caixas de cartão repetidas) -->
           <div class="about-pillars-col">
             <h2 class="pillars-main-title">Eixos de estudo</h2>
             
@@ -288,12 +246,9 @@
       </div>
     </section>
 
-    <!-- ====================================================================
-         PÁGINA 3: PROJETOS
-         Catálogo editorial com destaque autêntico para o TCC
-         ==================================================================== -->
-    <section class="page-view" id="projetos" aria-label="Página de Projetos Desenvolvidos">
-      <div class="page-container projects-editorial-container">
+    <!-- PÁGINA 3: PROJETOS -->
+    <section class="page-view" id="projetos" aria-label="Projetos Desenvolvidos">
+      <div class="page-container">
 
         <header class="page-intro-header">
           <span class="section-kicker">Trabalhos reais</span>
@@ -305,7 +260,7 @@
           </p>
         </header>
 
-        <!-- Destaque Especial: TCC Fullstack -->
+        <!-- Destaque: TCC Fullstack -->
         <article class="featured-case-block">
           <div class="featured-case-tag">
             <span>Destaque Acadêmico · Trabalho de Conclusão de Curso (TCC)</span>
@@ -318,25 +273,25 @@
                 Projeto final da formação técnica em TI com arquitetura desacoplada: uma API backend estruturada em Node.js e Express com rotas de processamento e regras de negócio, conectada a uma interface web frontend responsiva e acessível.
               </p>
               <div class="featured-stack-text">
-                <span class="stack-item">JavaScript</span>
+                <span>JavaScript</span>
                 <span class="stack-dot">·</span>
-                <span class="stack-item">Node.js</span>
+                <span>Node.js</span>
                 <span class="stack-dot">·</span>
-                <span class="stack-item">Express</span>
+                <span>Express</span>
                 <span class="stack-dot">·</span>
-                <span class="stack-item">Frontend Web</span>
+                <span>Frontend Web</span>
                 <span class="stack-dot">·</span>
-                <span class="stack-item">Deploy Vercel</span>
+                <span>Deploy Vercel</span>
               </div>
               <div class="featured-case-links">
                 <a href="https://tcc-theta-ten.vercel.app" target="_blank" rel="noopener noreferrer" class="link-item primary">
-                  <span>Acessar versão online ↗</span>
+                  Acessar versão online ↗
                 </a>
                 <a href="https://github.com/laurabrilhantetorrano/tcc" target="_blank" rel="noopener noreferrer" class="link-item">
-                  <span>Repositório Frontend ↗</span>
+                  Repositório Frontend ↗
                 </a>
                 <a href="https://github.com/laurabrilhantetorrano/back-tcc" target="_blank" rel="noopener noreferrer" class="link-item">
-                  <span>Repositório Backend ↗</span>
+                  Repositório Backend ↗
                 </a>
               </div>
             </div>
@@ -360,10 +315,9 @@
           </div>
         </article>
 
-        <!-- Catálogo Aberto dos Demais Projetos (Sem cartões idênticos) -->
+        <!-- Demais Projetos -->
         <div class="projects-catalog-list">
           
-          <!-- Projeto 02: Pizzaria Java -->
           <article class="project-entry">
             <div class="project-entry-num">01</div>
             <div class="project-entry-content">
@@ -376,13 +330,12 @@
               </p>
               <div class="project-entry-footer">
                 <a href="https://github.com/laurabrilhantetorrano/Pizzaria" target="_blank" rel="noopener noreferrer" class="project-entry-link">
-                  <span>Ver repositório no GitHub ↗</span>
+                  Ver repositório no GitHub ↗
                 </a>
               </div>
             </div>
           </article>
 
-          <!-- Projeto 03: API MongoDB -->
           <article class="project-entry">
             <div class="project-entry-num">02</div>
             <div class="project-entry-content">
@@ -395,16 +348,15 @@
               </p>
               <div class="project-entry-footer">
                 <a href="https://github.com/laurabrilhantetorrano/mongodb-gu" target="_blank" rel="noopener noreferrer" class="project-entry-link">
-                  <span>Repositório no GitHub ↗</span>
+                  Repositório no GitHub ↗
                 </a>
                 <a href="https://mongodb-gu.vercel.app" target="_blank" rel="noopener noreferrer" class="project-entry-link outline">
-                  <span>Versão Online ↗</span>
+                  Versão Online ↗
                 </a>
               </div>
             </div>
           </article>
 
-          <!-- Projeto 04: RPG Redivo em Java -->
           <article class="project-entry">
             <div class="project-entry-num">03</div>
             <div class="project-entry-content">
@@ -417,13 +369,12 @@
               </p>
               <div class="project-entry-footer">
                 <a href="https://github.com/laurabrilhantetorrano/rpg-redivo" target="_blank" rel="noopener noreferrer" class="project-entry-link">
-                  <span>Ver repositório no GitHub ↗</span>
+                  Ver repositório no GitHub ↗
                 </a>
               </div>
             </div>
           </article>
 
-          <!-- Projeto 05: Sistema de Cadastro Front-Back -->
           <article class="project-entry">
             <div class="project-entry-num">04</div>
             <div class="project-entry-content">
@@ -436,10 +387,10 @@
               </p>
               <div class="project-entry-footer">
                 <a href="https://github.com/laurabrilhantetorrano/Cadastro-Front-Back-thata" target="_blank" rel="noopener noreferrer" class="project-entry-link">
-                  <span>Repositório no GitHub ↗</span>
+                  Repositório no GitHub ↗
                 </a>
                 <a href="https://cadastrofrontbackthata.vercel.app" target="_blank" rel="noopener noreferrer" class="project-entry-link outline">
-                  <span>Versão Online ↗</span>
+                  Versão Online ↗
                 </a>
               </div>
             </div>
@@ -450,12 +401,9 @@
       </div>
     </section>
 
-    <!-- ====================================================================
-         PÁGINA 4: HABILIDADES TÉCNICAS
-         Layout tipográfico arejado, sem ícones genéricos ou caixas repetidas
-         ==================================================================== -->
-    <section class="page-view" id="habilidades" aria-label="Página de Conhecimentos e Habilidades Técnicas">
-      <div class="page-container skills-editorial-container">
+    <!-- PÁGINA 4: HABILIDADES -->
+    <section class="page-view" id="habilidades" aria-label="Conhecimentos e Habilidades Técnicas">
+      <div class="page-container">
 
         <header class="page-intro-header">
           <span class="section-kicker">Conhecimentos</span>
@@ -524,7 +472,7 @@
           </div>
 
           <div class="skills-group">
-            <h2 class="skills-group-title">Ferramentas &amp; Ambiente</h2>
+            <h2 class="skills-group-title">Ferramentas</h2>
             <ul class="skills-plain-list">
               <li>
                 <strong>Git &amp; GitHub</strong>
@@ -546,12 +494,9 @@
       </div>
     </section>
 
-    <!-- ====================================================================
-         PÁGINA 5: CONTATO
-         Diálogo direto, acolhedor e sem formulários engessados
-         ==================================================================== -->
-    <section class="page-view" id="contato" aria-label="Página de Contato e Comunicação">
-      <div class="page-container contact-editorial-container">
+    <!-- PÁGINA 5: CONTATO -->
+    <section class="page-view" id="contato" aria-label="Contato">
+      <div class="page-container">
 
         <header class="page-intro-header">
           <span class="section-kicker">Contato</span>
@@ -565,7 +510,7 @@
 
         <div class="contact-editorial-layout">
           
-          <!-- Canais Diretos -->
+          <!-- Canais diretos -->
           <div class="contact-direct-col">
             <h2 class="contact-col-heading">Canais diretos</h2>
             
@@ -591,7 +536,7 @@
             </div>
           </div>
 
-          <!-- Formulário Limpo com Validação Real -->
+          <!-- Formulário -->
           <div class="contact-form-col">
             <form id="contactForm" class="contact-editorial-form" novalidate>
               
@@ -628,7 +573,7 @@
 
             </form>
 
-            <!-- Caixa de Feedback após Validação -->
+            <!-- Feedback pós-envio -->
             <div class="form-feedback-box" id="formFeedbackBox" style="display: none;" role="status">
               <div class="feedback-icon" aria-hidden="true">✓</div>
               <div class="feedback-content">
@@ -637,11 +582,11 @@
                   Seu leitor de e-mail foi acionado com os dados preenchidos. Caso a janela não tenha aberto, você pode copiar os dados abaixo:
                 </p>
                 <div class="feedback-actions">
-                  <button type="button" class="btn-text-link mini-action" id="copyMessageBtn">
-                    <span>Copiar texto da mensagem</span>
+                  <button type="button" class="mini-action" id="copyMessageBtn">
+                    Copiar texto da mensagem
                   </button>
-                  <a href="#" id="directMailtoTrigger" class="btn-text-link mini-action">
-                    <span>Tentar abrir e-mail novamente</span>
+                  <a href="#" id="directMailtoTrigger" class="mini-action">
+                    Tentar abrir e-mail novamente
                   </a>
                 </div>
               </div>
@@ -656,10 +601,9 @@
 
   </main>
 
-  <!-- ========================================================================
-       FOOTER (RODAPÉ)
-       Sóbrio, elegante e direto
-       ======================================================================== -->
+  <!-- ================================================================
+       FOOTER
+       ================================================================ -->
   <footer class="site-footer">
     <div class="footer-inner">
       
@@ -673,7 +617,7 @@
       <nav class="footer-nav-col" aria-label="Navegação secundária">
         <ul class="footer-links">
           <li><a href="#hero" data-page="hero">Início</a></li>
-          <li><a href="#sobre" data-page="sobre">Sobre mim</a></li>
+          <li><a href="#sobre" data-page="sobre">Sobre</a></li>
           <li><a href="#projetos" data-page="projetos">Projetos</a></li>
           <li><a href="#habilidades" data-page="habilidades">Habilidades</a></li>
           <li><a href="#contato" data-page="contato">Contato</a></li>

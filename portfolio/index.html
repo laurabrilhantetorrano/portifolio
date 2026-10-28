@@ -1,15 +1,15 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" data-theme="dark">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Laura Brilhante Torrano — Portfólio de Tecnologia</title>
-  <meta name="description" content="Portfólio de Laura Brilhante Torrano. Estudante do ensino médio com formação técnica em TI, com foco em desenvolvimento de software, interfaces e rumo à Engenharia de Software / Computação.">
+  <meta name="description" content="Portfólio de Laura Brilhante Torrano. Estudante do ensino médio técnico em TI, com foco em desenvolvimento de software e rumo à Engenharia de Software e da Computação.">
   
-  <!-- Favicon SVG inline -->
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%23121014%22/><text y=%2268%22 x=%2250%22 font-size=%2260%22 font-family=%22serif%22 font-weight=%22bold%22 text-anchor=%22middle%22 fill=%22%23FF63F8%22>𝕷</text></svg>">
+  <!-- Favicon SVG com monograma gótico -->
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2222%22 fill=%22%23120713%22/><text y=%2268%22 x=%2250%22 font-size=%2260%22 font-family=%22serif%22 font-weight=%22bold%22 text-anchor=%22middle%22 fill=%22%23FF63F8%22>𝕷</text></svg>">
 
-  <!-- Google Fonts: Syne, Plus Jakarta Sans, Space Grotesk, UnifrakturMaguntia -->
+  <!-- Google Fonts: Syne (editorial display), UnifrakturMaguntia (gótica/blackletter), Plus Jakarta Sans (leitura limpa), Space Grotesk (metadados tech) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@700;800&family=UnifrakturMaguntia&display=swap" rel="stylesheet">
@@ -18,11 +18,19 @@
 </head>
 <body>
 
-  <!-- Textura sutil de fundo em modo escuro -->
+  <!-- Custom Cursor Fluido (Inspirado em Igloo.inc, desativa em touch) -->
+  <div class="custom-cursor" id="customCursor" aria-hidden="true">
+    <div class="cursor-dot" id="cursorDot"></div>
+    <div class="cursor-ring" id="cursorRing"></div>
+  </div>
+
+  <!-- Atmosfera Sutil de Fundo -->
   <div class="ambient-grid" aria-hidden="true"></div>
   <div class="ambient-glow" aria-hidden="true"></div>
 
-  <!-- Header / Menu Fixo Superior -->
+  <!-- ========================================================================
+       HEADER / MENU FIXO SUPERIOR
+       ======================================================================== -->
   <header class="site-header" id="siteHeader">
     <div class="header-inner">
       
@@ -32,7 +40,7 @@
         <span class="brand-name">Laura Brilhante<span class="brand-surname"> Torrano</span></span>
       </a>
 
-      <!-- Status Bar / Cagdas Cecen Style -->
+      <!-- Status Bar / Cagdas Cecen Inspired -->
       <div class="header-status" id="headerStatus">
         <span class="status-pulse" aria-hidden="true"></span>
         <span class="status-text">Ensino Médio em TI</span>
@@ -40,49 +48,61 @@
         <span class="status-time" id="liveClock">--:--:-- BRT</span>
       </div>
 
-      <!-- Navegação Desktop -->
-      <nav class="nav-menu" id="navMenu" aria-label="Navegação principal">
-        <a href="#hero" class="nav-link active" id="navHero">Início</a>
-        <a href="#sobre" class="nav-link" id="navSobre">Sobre</a>
-        <a href="#projetos" class="nav-link" id="navProjetos">Projetos</a>
-        <a href="#habilidades" class="nav-link" id="navHabilidades">Habilidades</a>
-        <a href="#contato" class="nav-link" id="navContato">Contato</a>
-      </nav>
+      <!-- Ações: Navegação Desktop + Alternador de Tema -->
+      <div class="header-actions">
+        <nav class="nav-menu" id="navMenu" aria-label="Navegação principal">
+          <a href="#hero" class="nav-link active" data-page="hero" id="navHero">Início</a>
+          <a href="#sobre" class="nav-link" data-page="sobre" id="navSobre">Sobre</a>
+          <a href="#projetos" class="nav-link" data-page="projetos" id="navProjetos">Projetos</a>
+          <a href="#habilidades" class="nav-link" data-page="habilidades" id="navHabilidades">Habilidades</a>
+          <a href="#contato" class="nav-link" data-page="contato" id="navContato">Contato</a>
+        </nav>
 
-      <!-- Botão Hambúrguer Mobile -->
-      <button class="mobile-toggle-btn" id="mobileMenuBtn" type="button" aria-label="Abrir menu de navegação" aria-expanded="false" aria-controls="mobileNavDrawer">
-        <span class="toggle-bar"></span>
-        <span class="toggle-bar"></span>
-        <span class="toggle-bar"></span>
-      </button>
+        <!-- Alternador de Tema Claro / Escuro -->
+        <button class="theme-toggle-btn" id="themeToggleBtn" type="button" aria-label="Alternar tema claro/escuro" title="Alternar tema">
+          <span class="theme-icon" aria-hidden="true">◐</span>
+          <span class="theme-label" id="themeLabel">Modo Vibrante</span>
+        </button>
+
+        <!-- Botão Hambúrguer Mobile -->
+        <button class="mobile-toggle-btn" id="mobileMenuBtn" type="button" aria-label="Abrir menu de navegação" aria-expanded="false" aria-controls="mobileNavDrawer">
+          <span class="toggle-bar"></span>
+          <span class="toggle-bar"></span>
+          <span class="toggle-bar"></span>
+        </button>
+      </div>
 
     </div>
 
     <!-- Gaveta / Menu de Navegação Mobile -->
     <div class="mobile-nav-drawer" id="mobileNavDrawer" aria-hidden="true">
       <nav class="mobile-nav-links" aria-label="Navegação mobile">
-        <a href="#hero" class="mobile-nav-link active">Início</a>
-        <a href="#sobre" class="mobile-nav-link">Sobre mim</a>
-        <a href="#projetos" class="mobile-nav-link">Projetos</a>
-        <a href="#habilidades" class="mobile-nav-link">Habilidades</a>
-        <a href="#contato" class="mobile-nav-link">Contato</a>
+        <a href="#hero" class="mobile-nav-link active" data-page="hero">Início</a>
+        <a href="#sobre" class="mobile-nav-link" data-page="sobre">Sobre mim</a>
+        <a href="#projetos" class="mobile-nav-link" data-page="projetos">Projetos</a>
+        <a href="#habilidades" class="mobile-nav-link" data-page="habilidades">Habilidades</a>
+        <a href="#contato" class="mobile-nav-link" data-page="contato">Contato</a>
       </nav>
       <div class="mobile-nav-footer">
-        <span class="mobile-status-tag">● Modo Escuro Oficial</span>
+        <span class="mobile-status-tag">● Ensino Médio Técnico em TI</span>
         <span class="mobile-academic-tag">Objetivo: Engenharia de Software</span>
       </div>
     </div>
   </header>
 
+  <!-- ========================================================================
+       CONTEÚDO PRINCIPAL: PÁGINAS INDEPENDENTES
+       (Cada página abre individualmente sob demanda, sem rolagem misturada)
+       ======================================================================== -->
   <main id="mainContent">
 
-    <!-- ========================================================================
-         SEÇÃO 1: HERO / INÍCIO
-         ======================================================================== -->
-    <section class="hero-section" id="hero" aria-label="Apresentação inicial">
-      <div class="section-container hero-container">
+    <!-- ====================================================================
+         PÁGINA 1: INÍCIO / HERO
+         ==================================================================== -->
+    <section class="page-view is-active" id="hero" aria-label="Página Inicial - Apresentação">
+      <div class="page-container hero-container">
 
-        <!-- Top Meta Info / Editorial Bar -->
+        <!-- Barra Editorial de Metadados -->
         <div class="hero-eyebrow">
           <div class="eyebrow-badge">
             <span class="badge-index">01</span>
@@ -94,7 +114,7 @@
           </div>
         </div>
 
-        <!-- Tipografia Monumental do Nome -->
+        <!-- Tipografia Monumental do Nome (Inspirado em Igloo.inc) -->
         <div class="hero-title-wrapper">
           <div class="hero-line hero-line-1">
             <span class="hero-word" data-text="LAURA">LAURA</span>
@@ -105,50 +125,53 @@
           </div>
           <div class="hero-line hero-line-3">
             <span class="hero-word" data-text="TORRANO">TORRANO</span>
-            <span class="hero-asterisk" aria-hidden="true">✦</span>
+            <span class="hero-accent-symbol" aria-hidden="true">✦</span>
           </div>
         </div>
 
-        <!-- Grade Inferior: Bio + Botões de Ação -->
+        <!-- Grade Inferior: Bio Autêntica + Botões de Ação Exclusivos -->
         <div class="hero-bottom-grid">
           
           <div class="hero-bio-col">
-            <p class="hero-subtitle-tag">Estudante de TI</p>
+            <p class="hero-subtitle-tag">Estudante de Tecnologia da Informação</p>
             <p class="hero-bio">
-              Entre código, interfaces e novos desafios na tecnologia — construindo minha formação técnica com foco no desenvolvimento de software e no objetivo acadêmico de cursar <strong>Engenharia de Software ou Engenharia da Computação</strong>.
+              Construindo minha formação técnica com foco no desenvolvimento de software, arquitetura de sistemas e interfaces intuitivas, com o objetivo acadêmico de ingressar em <strong>Engenharia de Software ou Engenharia da Computação</strong>.
             </p>
             <div class="hero-tags">
               <span class="pill-tag">Java &amp; POO</span>
-              <span class="pill-tag">React &amp; Interfaces</span>
-              <span class="pill-tag">Node.js &amp; APIs</span>
+              <span class="pill-tag">JavaScript &amp; Node.js</span>
               <span class="pill-tag">Bancos de Dados</span>
               <span class="pill-tag">HTML · CSS · JS Puro</span>
+              <span class="pill-tag">React</span>
             </div>
           </div>
 
           <div class="hero-cta-col">
             <div class="cta-wrapper">
-              <a href="#projetos" class="cta-button primary-cta" id="heroCtaBtn">
+              <a href="#projetos" class="cta-button primary-cta" data-page="projetos" id="heroCtaBtn">
                 <span class="cta-text">Explorar Projetos</span>
-                <span class="cta-icon-box">
-                  <svg class="cta-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <span class="cta-icon-box" aria-hidden="true">
+                  <svg class="cta-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                     <line x1="7" y1="17" x2="17" y2="7"></line>
                     <polyline points="7 7 17 7 17 17"></polyline>
                   </svg>
                 </span>
               </a>
 
-              <a href="#sobre" class="cta-button secondary-cta" id="heroAboutBtn">
+              <a href="#sobre" class="cta-button secondary-cta" data-page="sobre" id="heroAboutBtn">
                 <span>Conhecer Minha Trajetória</span>
-                <span class="cta-subarrow">↓</span>
+                <span class="cta-subarrow" aria-hidden="true">→</span>
+              </a>
+
+              <a href="#contato" class="cta-button secondary-cta ghost-cta" data-page="contato" id="heroContactBtn">
+                <span>Falar Comigo</span>
+                <span class="cta-subarrow" aria-hidden="true">✉</span>
               </a>
             </div>
 
-            <div class="scroll-indicator" aria-hidden="true">
-              <span class="scroll-track">
-                <span class="scroll-thumb"></span>
-              </span>
-              <span class="scroll-caption">Role para navegar pelas seções</span>
+            <div class="navigation-hint">
+              <span class="hint-dot"></span>
+              <span class="hint-text">Navegue pelas abas acima ou clique nos botões para acessar cada página.</span>
             </div>
           </div>
 
@@ -157,11 +180,11 @@
       </div>
     </section>
 
-    <!-- ========================================================================
-         SEÇÃO 2: SOBRE MIM
-         ======================================================================== -->
-    <section class="content-section" id="sobre" aria-label="Sobre Laura Brilhante Torrano">
-      <div class="section-container">
+    <!-- ====================================================================
+         PÁGINA 2: SOBRE MIM
+         ==================================================================== -->
+    <section class="page-view" id="sobre" aria-label="Página Sobre Laura Brilhante Torrano">
+      <div class="page-container">
 
         <div class="section-header">
           <div class="section-eyebrow">
@@ -170,51 +193,51 @@
             <span class="eyebrow-divider">/</span>
             <span class="eyebrow-sub">PERFIL &amp; TRAJETÓRIA</span>
           </div>
-          <h2 class="section-title">Compreender a lógica por trás dos sistemas e criar experiências que conectam pessoas.</h2>
+          <h1 class="section-title">Compreender a lógica dos sistemas e desenvolver soluções bem estruturadas.</h1>
         </div>
 
         <div class="about-grid">
           
-          <!-- Coluna Editorial com Texto Autêntico -->
+          <!-- Coluna Narrativa Editorial -->
           <div class="about-narrative-col">
             <div class="about-text-block">
               <p class="lead-text">
-                Sou Laura Brilhante Torrano, estudante do ensino médio com formação técnica em Tecnologia da Informação. Tenho interesse em desenvolvimento de software, criação de interfaces e desenvolvimento web e mobile.
+                Sou Laura Brilhante Torrano, estudante do ensino médio com formação técnica em Tecnologia da Informação. Meu foco principal está no desenvolvimento de software, na compreensão da lógica computacional e na construção de interfaces limpas e funcionais.
               </p>
               <p>
-                Durante minha formação técnica, venho explorando linguagens de programação, frameworks, bancos de dados e ferramentas de desenvolvimento por meio de atividades acadêmicas e projetos práticos em equipe e individuais.
+                Durante o curso técnico, desenvolvo projetos práticos individuais e em equipe, aplicando linguagens como Java e JavaScript, rotas de API com Node.js e Express, modelagem de banco de dados e estruturação frontend com padrões modernos de web.
               </p>
               <p>
-                Gosto de entender a arquitetura que faz as aplicações funcionarem por trás dos panos — regras de negócio, rotas e persistência de dados —, mas também tenho grande apreço pela experiência visual, tipografia e organização de telas intuitivas.
+                Aprecio tanto o backend — regras de negócio, persistência de dados e arquitetura de rotas — quanto o frontend cuidadoso, com atenção à tipografia, espaçamento e facilidade de navegação para o usuário.
               </p>
               <p>
-                Meu próximo passo acadêmico é ingressar na faculdade de <strong>Engenharia de Software ou Engenharia da Computação</strong>, aprofundando minha base em sistemas complexos e ampliando meu repertório em engenharia e tecnologia.
+                Meu objetivo direto é ingressar no curso superior de <strong>Engenharia de Software ou Engenharia da Computação</strong>, expandindo meus conhecimentos em algoritmos, sistemas distribuídos e engenharia avançada.
               </p>
             </div>
 
-            <div class="about-cta-row">
-              <a href="#projetos" class="cta-button secondary-cta">
-                <span>Ver projetos desenvolvidos</span>
-                <span class="cta-subarrow">→</span>
+            <div class="about-actions-row">
+              <a href="#projetos" class="cta-button primary-cta" data-page="projetos">
+                <span>Ver Meus Projetos</span>
+                <span class="cta-icon-box" aria-hidden="true">→</span>
               </a>
-              <a href="https://github.com/laurabrilhantetorrano" target="_blank" rel="noopener noreferrer" class="link-inline">
-                <span>Ver perfil no GitHub</span>
+              <a href="https://github.com/laurabrilhantetorrano" target="_blank" rel="noopener noreferrer" class="link-editorial">
+                <span>Perfil no GitHub</span>
                 <span class="link-ext-icon" aria-hidden="true">↗</span>
               </a>
             </div>
           </div>
 
-          <!-- Coluna Visual / Cartão de Identidade Editorial (sem foto genérica) -->
+          <!-- Coluna Visual: Ficha Acadêmica com Monograma -->
           <div class="about-card-col">
             <div class="editorial-profile-card">
               <div class="profile-card-header">
                 <span class="profile-card-dot"></span>
                 <span class="profile-card-label">FICHA ACADÊMICA</span>
-                <span class="profile-card-id">LBT-2026</span>
+                <span class="profile-card-id">LBT-TI</span>
               </div>
 
               <div class="profile-monogram-box">
-                <span class="profile-big-gothic">𝕷</span>
+                <span class="profile-big-gothic" aria-hidden="true">𝕷</span>
                 <div class="profile-name-stack">
                   <span class="profile-full-name">Laura Brilhante Torrano</span>
                   <span class="profile-status-badge">Estudante de Tecnologia</span>
@@ -224,15 +247,15 @@
               <div class="profile-meta-list">
                 <div class="profile-meta-item">
                   <span class="meta-label">FORMAÇÃO</span>
-                  <span class="meta-value">Ensino Médio com Habilitação Técnica em TI</span>
+                  <span class="meta-value">Ensino Médio com Técnico em TI</span>
                 </div>
                 <div class="profile-meta-item">
-                  <span class="meta-label">META ACADÊMICA</span>
+                  <span class="meta-label">OBJETIVO ACADÊMICO</span>
                   <span class="meta-value">Engenharia de Software / Computação</span>
                 </div>
                 <div class="profile-meta-item">
-                  <span class="meta-label">ÁREAS DE INTERESSE</span>
-                  <span class="meta-value">Desenvolvimento de Software, Web, Mobile e Design de Interfaces</span>
+                  <span class="meta-label">ÁREAS DE ESTUDO</span>
+                  <span class="meta-value">POO, Desenvolvimento Web, APIs e Bancos de Dados</span>
                 </div>
                 <div class="profile-meta-item">
                   <span class="meta-label">REPOSITÓRIOS PÚBLICOS</span>
@@ -241,7 +264,7 @@
               </div>
 
               <div class="profile-quote-box">
-                <span class="quote-symbol">“</span>
+                <span class="quote-symbol" aria-hidden="true">“</span>
                 <p class="quote-text">Aprender na prática, estruturando código sólido e interfaces que fazem sentido.</p>
               </div>
             </div>
@@ -249,41 +272,44 @@
 
         </div>
 
-        <!-- 3 Pilares de Estudo -->
-        <div class="about-pillars-grid">
-          <div class="pillar-card">
-            <div class="pillar-num">01</div>
-            <h3 class="pillar-title">Lógica &amp; POO</h3>
-            <p class="pillar-desc">
-              Estudo dos princípios de Programação Orientada a Objetos com Java, estruturas condicionais, coleções e modelagem de regras para resolver problemas concretos.
-            </p>
-          </div>
+        <!-- 3 Pilares de Aprendizado -->
+        <div class="pillars-section">
+          <h2 class="sub-heading">Pilares de Foco Técnico</h2>
+          <div class="pillars-grid">
+            <div class="pillar-card">
+              <div class="pillar-num">01</div>
+              <h3 class="pillar-title">Lógica &amp; POO</h3>
+              <p class="pillar-desc">
+                Princípios de Programação Orientada a Objetos com Java, modelagem de classes, encapsulamento, herança e desenvolvimento de regras para soluções concretas.
+              </p>
+            </div>
 
-          <div class="pillar-card">
-            <div class="pillar-num">02</div>
-            <h3 class="pillar-title">Web &amp; Interfaces</h3>
-            <p class="pillar-desc">
-              Criação de páginas e componentes com HTML5 semântico, CSS3 responsivo, JavaScript puro e React, cuidando da legibilidade, usabilidade e contraste.
-            </p>
-          </div>
+            <div class="pillar-card">
+              <div class="pillar-num">02</div>
+              <h3 class="pillar-title">Web &amp; Interfaces</h3>
+              <p class="pillar-desc">
+                Construção de aplicações com HTML5 semântico, CSS3 flexível e responsivo, JavaScript puro e conceitos de componentes em React com foco em usabilidade e contraste.
+              </p>
+            </div>
 
-          <div class="pillar-card">
-            <div class="pillar-num">03</div>
-            <h3 class="pillar-title">APIs &amp; Dados</h3>
-            <p class="pillar-desc">
-              Construção de rotas com Node.js e Express, comunicação entre frontend e backend, além de integração com bancos de dados relacionais e NoSQL (MongoDB/SQLite).
-            </p>
+            <div class="pillar-card">
+              <div class="pillar-num">03</div>
+              <h3 class="pillar-title">APIs &amp; Dados</h3>
+              <p class="pillar-desc">
+                Desenvolvimento de rotas com Node.js e Express, integração entre frontend e backend, além de persistência de dados em MongoDB e bancos relacionais.
+              </p>
+            </div>
           </div>
         </div>
 
       </div>
     </section>
 
-    <!-- ========================================================================
-         SEÇÃO 3: PROJETOS CONFIRMADOS
-         ======================================================================== -->
-    <section class="content-section" id="projetos" aria-label="Projetos desenvolvidos por Laura">
-      <div class="section-container">
+    <!-- ====================================================================
+         PÁGINA 3: PROJETOS
+         ==================================================================== -->
+    <section class="page-view" id="projetos" aria-label="Página de Projetos Desenvolvidos">
+      <div class="page-container">
 
         <div class="section-header">
           <div class="section-eyebrow">
@@ -292,9 +318,9 @@
             <span class="eyebrow-divider">/</span>
             <span class="eyebrow-sub">REPOSITÓRIOS CONFIRMADOS</span>
           </div>
-          <h2 class="section-title">Aplicações reais desenvolvidas em atividades acadêmicas e estudos práticos.</h2>
+          <h1 class="section-title">Aplicações reais desenvolvidas em atividades acadêmicas e estudos de código.</h1>
           <p class="section-subtitle">
-            Trabalhos confirmados com repositórios e versões publicadas no ecossistema do meu GitHub, demonstrando a evolução em lógica, frontend, backend e bancos de dados.
+            Trabalhos com repositórios e versões publicadas no meu GitHub, demonstrando a evolução prática em lógica, frontend, backend e bancos de dados.
           </p>
         </div>
 
@@ -302,15 +328,15 @@
         <article class="project-featured-card">
           <div class="featured-card-badge">
             <span class="badge-dot"></span>
-            <span>PROJETO DE DESTAQUE · TRABALHO DE CONCLUSÃO DE CURSO</span>
+            <span>PROJETO DE DESTAQUE · TRABALHO DE CONCLUSÃO DE CURSO TÉCNICO</span>
           </div>
 
           <div class="featured-grid">
             <div class="featured-info-col">
-              <span class="project-category-tag">FULLSTACK · WEB &amp; API</span>
-              <h3 class="featured-project-title">TCC: Sistema Integrado (Front &amp; Back)</h3>
+              <span class="project-category-tag">FULLSTACK · WEB &amp; BACKEND REST</span>
+              <h2 class="featured-project-title">TCC: Sistema Integrado (Front &amp; Back)</h2>
               <p class="featured-project-desc">
-                Projeto prático e acadêmico de conclusão técnica composto por arquitetura dividida: uma API backend desenvolvida em Node.js e Express com rotas de processamento de dados, conectada a uma interface web frontend responsiva com foco na facilidade de uso.
+                Projeto acadêmico de conclusão de curso com arquitetura dividida: uma API backend desenvolvida em Node.js e Express com rotas de processamento e regras de negócio, conectada a uma interface web frontend responsiva e acessível.
               </p>
               
               <div class="project-tech-stack">
@@ -318,53 +344,51 @@
                 <span class="tech-pill">Node.js</span>
                 <span class="tech-pill">Express</span>
                 <span class="tech-pill">Frontend Web</span>
-                <span class="tech-pill">Vercel Deploy</span>
                 <span class="tech-pill">APIs REST</span>
+                <span class="tech-pill">Deploy Vercel</span>
               </div>
 
               <div class="project-actions-row">
                 <a href="https://tcc-theta-ten.vercel.app" target="_blank" rel="noopener noreferrer" class="cta-button primary-cta project-btn">
                   <span>Acessar Versão Web</span>
-                  <span class="cta-icon-box">↗</span>
+                  <span class="cta-icon-box" aria-hidden="true">↗</span>
                 </a>
                 <a href="https://github.com/laurabrilhantetorrano/tcc" target="_blank" rel="noopener noreferrer" class="cta-button secondary-cta project-btn">
                   <span>Repo Frontend</span>
+                  <span class="cta-subarrow" aria-hidden="true">↗</span>
                 </a>
                 <a href="https://github.com/laurabrilhantetorrano/back-tcc" target="_blank" rel="noopener noreferrer" class="cta-button secondary-cta project-btn">
                   <span>Repo Backend</span>
+                  <span class="cta-subarrow" aria-hidden="true">↗</span>
                 </a>
               </div>
             </div>
 
-            <div class="featured-visual-col" aria-hidden="true">
-              <div class="code-preview-window">
-                <div class="code-window-bar">
-                  <span class="window-dot red"></span>
-                  <span class="window-dot yellow"></span>
-                  <span class="window-dot green"></span>
-                  <span class="window-title">api-tcc / server.js</span>
+            <div class="featured-meta-col">
+              <div class="project-spec-card">
+                <div class="spec-header">
+                  <span class="spec-index">ESPECIFICAÇÕES DO PROJETO</span>
                 </div>
-                <pre class="code-snippet"><code><span class="token-kw">const</span> express = <span class="token-fn">require</span>(<span class="token-str">'express'</span>);
-<span class="token-kw">const</span> cors = <span class="token-fn">require</span>(<span class="token-str">'cors'</span>);
-<span class="token-kw">const</span> app = <span class="token-fn">express</span>();
-
-app.<span class="token-fn">use</span>(cors());
-app.<span class="token-fn">use</span>(express.<span class="token-fn">json</span>());
-
-app.<span class="token-fn">get</span>(<span class="token-str">'/api/health'</span>, (req, res) => {
-  res.<span class="token-fn">json</span>({ status: <span class="token-str">'online'</span>, tier: <span class="token-str">'tcc'</span> });
-});
-
-<span class="token-comment">// Rotas de integração frontend-backend</span></code></pre>
-                <div class="code-window-footer">
-                  <span class="footer-tag">Deploy: Vercel Cloud Serverless</span>
-                </div>
+                <ul class="spec-list">
+                  <li>
+                    <strong>Estrutura:</strong> Repositórios desacoplados para frontend e backend
+                  </li>
+                  <li>
+                    <strong>Comunicação:</strong> Requisições assíncronas JSON via endpoints REST
+                  </li>
+                  <li>
+                    <strong>Hospedagem:</strong> Servidores em nuvem na plataforma Vercel
+                  </li>
+                  <li>
+                    <strong>Finalidade:</strong> Conclusão da formação técnica em TI
+                  </li>
+                </ul>
               </div>
             </div>
           </div>
         </article>
 
-        <!-- Grade com outros Projetos Confirmados -->
+        <!-- Grade com os demais Projetos Confirmados -->
         <div class="projects-grid">
 
           <!-- Card 2: Java POO Pizzaria -->
@@ -373,17 +397,17 @@ app.<span class="token-fn">get</span>(<span class="token-str">'/api/health'</spa
               <span class="project-index">02</span>
               <span class="project-type-tag">JAVA &amp; POO</span>
             </div>
-            <h3 class="project-name">Sistema de Pizzaria</h3>
+            <h2 class="project-name">Sistema de Pizzaria</h2>
             <p class="project-desc">
-              Projeto acadêmico em Java focado em Programação Orientada a Objetos. Estruturação de classes de domínio, encapsulamento de atributos, métodos de cálculo e controle de pedidos e sabores.
+              Aplicação desenvolvida em Java aplicando princípios de Programação Orientada a Objetos. Estruturação de classes de domínio, encapsulamento de atributos, métodos de cálculo e controle de pedidos e sabores.
             </p>
             <div class="project-tech-stack">
               <span class="tech-pill">Java</span>
               <span class="tech-pill">POO</span>
-              <span class="tech-pill">Lógica de Classes</span>
+              <span class="tech-pill">Modelagem de Classes</span>
             </div>
-            <div class="project-links">
-              <a href="https://github.com/laurabrilhantetorrano/Pizzaria" target="_blank" rel="noopener noreferrer" class="project-link-btn">
+            <div class="project-card-footer">
+              <a href="https://github.com/laurabrilhantetorrano/Pizzaria" target="_blank" rel="noopener noreferrer" class="project-link-action">
                 <span>Repositório no GitHub</span>
                 <span class="link-arrow" aria-hidden="true">↗</span>
               </a>
@@ -396,9 +420,9 @@ app.<span class="token-fn">get</span>(<span class="token-str">'/api/health'</spa
               <span class="project-index">03</span>
               <span class="project-type-tag">BACKEND &amp; MONGODB</span>
             </div>
-            <h3 class="project-name">API com Banco NoSQL (mongodb-gu)</h3>
+            <h2 class="project-name">API com Banco NoSQL (mongodb-gu)</h2>
             <p class="project-desc">
-              Aplicação de backend com conexão persistente ao MongoDB. Implementação de rotas para criação, busca e tratamento de documentos NoSQL via Express.
+              Aplicação de backend com integração persistente ao banco MongoDB. Implementação de rotas via Express para criação, consulta e tratamento de documentos NoSQL.
             </p>
             <div class="project-tech-stack">
               <span class="tech-pill">Node.js</span>
@@ -406,12 +430,12 @@ app.<span class="token-fn">get</span>(<span class="token-str">'/api/health'</spa
               <span class="tech-pill">Express</span>
               <span class="tech-pill">Vercel</span>
             </div>
-            <div class="project-links">
-              <a href="https://github.com/laurabrilhantetorrano/mongodb-gu" target="_blank" rel="noopener noreferrer" class="project-link-btn">
+            <div class="project-card-footer">
+              <a href="https://github.com/laurabrilhantetorrano/mongodb-gu" target="_blank" rel="noopener noreferrer" class="project-link-action">
                 <span>Repositório</span>
                 <span class="link-arrow" aria-hidden="true">↗</span>
               </a>
-              <a href="https://mongodb-gu.vercel.app" target="_blank" rel="noopener noreferrer" class="project-link-btn outline">
+              <a href="https://mongodb-gu.vercel.app" target="_blank" rel="noopener noreferrer" class="project-link-action outline">
                 <span>Versão Online</span>
                 <span class="link-arrow" aria-hidden="true">↗</span>
               </a>
@@ -424,17 +448,17 @@ app.<span class="token-fn">get</span>(<span class="token-str">'/api/health'</spa
               <span class="project-index">04</span>
               <span class="project-type-tag">JAVA &amp; LÓGICA</span>
             </div>
-            <h3 class="project-name">RPG Redivo</h3>
+            <h2 class="project-name">RPG Redivo</h2>
             <p class="project-desc">
-              Desenvolvimento de mecânicas de jogo de RPG em Java puro. Modelagem de personagens, regras de combate, pontos de vida, ataques e controle de fluxo via terminal.
+              Mecânicas de jogo de RPG estruturadas em Java puro. Modelagem de personagens, regras de atributos, fluxo de batalhas e controle de tomada de decisões via lógica de programação.
             </p>
             <div class="project-tech-stack">
               <span class="tech-pill">Java</span>
               <span class="tech-pill">POO</span>
-              <span class="tech-pill">Estruturas Condicionais</span>
+              <span class="tech-pill">Estruturas Lógicas</span>
             </div>
-            <div class="project-links">
-              <a href="https://github.com/laurabrilhantetorrano/rpg-redivo" target="_blank" rel="noopener noreferrer" class="project-link-btn">
+            <div class="project-card-footer">
+              <a href="https://github.com/laurabrilhantetorrano/rpg-redivo" target="_blank" rel="noopener noreferrer" class="project-link-action">
                 <span>Repositório no GitHub</span>
                 <span class="link-arrow" aria-hidden="true">↗</span>
               </a>
@@ -447,9 +471,9 @@ app.<span class="token-fn">get</span>(<span class="token-str">'/api/health'</spa
               <span class="project-index">05</span>
               <span class="project-type-tag">FULLSTACK</span>
             </div>
-            <h3 class="project-name">Sistema de Cadastro (Front &amp; Back)</h3>
+            <h2 class="project-name">Sistema de Cadastro (Front &amp; Back)</h2>
             <p class="project-desc">
-              Aplicação de cadastro com interface de formulário conectada a endpoints de API para envio e listagem de registros, exercitando validações e feedback ao usuário.
+              Aplicação de formulário conectada a endpoints de API para envio, persistência e listagem de registros, praticando validação de campos e feedback ao usuário.
             </p>
             <div class="project-tech-stack">
               <span class="tech-pill">JavaScript</span>
@@ -457,12 +481,12 @@ app.<span class="token-fn">get</span>(<span class="token-str">'/api/health'</spa
               <span class="tech-pill">Node.js</span>
               <span class="tech-pill">Vercel</span>
             </div>
-            <div class="project-links">
-              <a href="https://github.com/laurabrilhantetorrano/Cadastro-Front-Back-thata" target="_blank" rel="noopener noreferrer" class="project-link-btn">
+            <div class="project-card-footer">
+              <a href="https://github.com/laurabrilhantetorrano/Cadastro-Front-Back-thata" target="_blank" rel="noopener noreferrer" class="project-link-action">
                 <span>Repositório</span>
                 <span class="link-arrow" aria-hidden="true">↗</span>
               </a>
-              <a href="https://cadastrofrontbackthata.vercel.app" target="_blank" rel="noopener noreferrer" class="project-link-btn outline">
+              <a href="https://cadastrofrontbackthata.vercel.app" target="_blank" rel="noopener noreferrer" class="project-link-action outline">
                 <span>Versão Online</span>
                 <span class="link-arrow" aria-hidden="true">↗</span>
               </a>
@@ -474,22 +498,22 @@ app.<span class="token-fn">get</span>(<span class="token-str">'/api/health'</spa
       </div>
     </section>
 
-    <!-- ========================================================================
-         SEÇÃO 4: HABILIDADES TÉCNICAS
-         ======================================================================== -->
-    <section class="content-section" id="habilidades" aria-label="Conhecimentos e habilidades técnicas">
-      <div class="section-container">
+    <!-- ====================================================================
+         PÁGINA 4: HABILIDADES TÉCNICAS
+         ==================================================================== -->
+    <section class="page-view" id="habilidades" aria-label="Página de Conhecimentos e Habilidades Técnicas">
+      <div class="page-container">
 
         <div class="section-header">
           <div class="section-eyebrow">
             <span class="eyebrow-num">04</span>
             <span class="eyebrow-name">HABILIDADES</span>
             <span class="eyebrow-divider">/</span>
-            <span class="eyebrow-sub">TECNOLOGIAS &amp; APRENDIZADO</span>
+            <span class="eyebrow-sub">TECNOLOGIAS &amp; FORMAÇÃO</span>
           </div>
-          <h2 class="section-title">Competências técnicas em evolução contínua.</h2>
+          <h1 class="section-title">Competências técnicas em evolução contínua.</h1>
           <p class="section-subtitle">
-            Conhecimentos adquiridos em aulas técnicas, práticas acadêmicas e projetos de código — sem porcentagens arbitrárias, apresentados com transparência e foco no aprendizado real.
+            Conhecimentos adquiridos em aulas técnicas, práticas acadêmicas e exercícios reais de código — apresentados com clareza, transparência e sem métricas artificiais.
           </p>
         </div>
 
@@ -498,13 +522,13 @@ app.<span class="token-fn">get</span>(<span class="token-str">'/api/health'</spa
           <!-- 1. Linguagens de Programação -->
           <div class="skill-category-card">
             <div class="skill-card-header">
-              <span class="category-icon" aria-hidden="true">⌨</span>
-              <h3 class="category-title">Linguagens de Programação</h3>
+              <span class="category-icon-box" aria-hidden="true">⌨</span>
+              <h2 class="category-title">Linguagens de Programação</h2>
             </div>
             <ul class="skill-items-list">
               <li class="skill-item">
                 <span class="skill-name">Java</span>
-                <span class="skill-detail">POO, classes, herança e regras de negócio</span>
+                <span class="skill-detail">POO, encapsulamento, herança e modelagem de regras</span>
               </li>
               <li class="skill-item">
                 <span class="skill-name">JavaScript (ES6+)</span>
@@ -512,7 +536,7 @@ app.<span class="token-fn">get</span>(<span class="token-str">'/api/health'</spa
               </li>
               <li class="skill-item">
                 <span class="skill-name">TypeScript</span>
-                <span class="skill-detail">Noções de tipagem e interfaces estáticas</span>
+                <span class="skill-detail">Fundamentos de tipagem estática e interfaces</span>
               </li>
             </ul>
           </div>
@@ -520,13 +544,13 @@ app.<span class="token-fn">get</span>(<span class="token-str">'/api/health'</spa
           <!-- 2. Desenvolvimento Web -->
           <div class="skill-category-card">
             <div class="skill-card-header">
-              <span class="category-icon" aria-hidden="true">🌐</span>
-              <h3 class="category-title">Desenvolvimento Web</h3>
+              <span class="category-icon-box" aria-hidden="true">🌐</span>
+              <h2 class="category-title">Desenvolvimento Web</h2>
             </div>
             <ul class="skill-items-list">
               <li class="skill-item">
                 <span class="skill-name">HTML5 Semântico</span>
-                <span class="skill-detail">Acessibilidade, estrutura limpa e SEO básico</span>
+                <span class="skill-detail">Acessibilidade, hierarquia limpa e tags estruturais</span>
               </li>
               <li class="skill-item">
                 <span class="skill-name">CSS3 Moderno</span>
@@ -534,7 +558,7 @@ app.<span class="token-fn">get</span>(<span class="token-str">'/api/health'</spa
               </li>
               <li class="skill-item">
                 <span class="skill-name">React</span>
-                <span class="skill-detail">Componentização, hooks básicos e renderização dinâmica</span>
+                <span class="skill-detail">Componentização, hooks fundamentais e renderização dinâmica</span>
               </li>
             </ul>
           </div>
@@ -542,8 +566,8 @@ app.<span class="token-fn">get</span>(<span class="token-str">'/api/health'</spa
           <!-- 3. Desenvolvimento Mobile -->
           <div class="skill-category-card">
             <div class="skill-card-header">
-              <span class="category-icon" aria-hidden="true">📱</span>
-              <h3 class="category-title">Desenvolvimento Mobile</h3>
+              <span class="category-icon-box" aria-hidden="true">📱</span>
+              <h2 class="category-title">Desenvolvimento Mobile</h2>
             </div>
             <ul class="skill-items-list">
               <li class="skill-item">
@@ -552,7 +576,7 @@ app.<span class="token-fn">get</span>(<span class="token-str">'/api/health'</spa
               </li>
               <li class="skill-item">
                 <span class="skill-name">Interfaces Móveis</span>
-                <span class="skill-detail">Adaptação de layouts, navegação e toque</span>
+                <span class="skill-detail">Adaptação de layout para toque e telas reduzidas</span>
               </li>
             </ul>
           </div>
@@ -560,8 +584,8 @@ app.<span class="token-fn">get</span>(<span class="token-str">'/api/health'</spa
           <!-- 4. Backend & Bancos de Dados -->
           <div class="skill-category-card">
             <div class="skill-card-header">
-              <span class="category-icon" aria-hidden="true">🗄</span>
-              <h3 class="category-title">Backend &amp; Bancos de Dados</h3>
+              <span class="category-icon-box" aria-hidden="true">🗄</span>
+              <h2 class="category-title">Backend &amp; Bancos de Dados</h2>
             </div>
             <ul class="skill-items-list">
               <li class="skill-item">
@@ -570,11 +594,11 @@ app.<span class="token-fn">get</span>(<span class="token-str">'/api/health'</spa
               </li>
               <li class="skill-item">
                 <span class="skill-name">MongoDB</span>
-                <span class="skill-detail">Estruturação de coleções e consultas NoSQL</span>
+                <span class="skill-detail">Coleções, documentos NoSQL e persistência</span>
               </li>
               <li class="skill-item">
                 <span class="skill-name">SQLite</span>
-                <span class="skill-detail">Integração com bancos relacionais em projetos acadêmicos</span>
+                <span class="skill-detail">Bancos relacionais e consultas em projetos acadêmicos</span>
               </li>
             </ul>
           </div>
@@ -582,43 +606,43 @@ app.<span class="token-fn">get</span>(<span class="token-str">'/api/health'</spa
           <!-- 5. Ferramentas & Fluxo de Trabalho -->
           <div class="skill-category-card">
             <div class="skill-card-header">
-              <span class="category-icon" aria-hidden="true">⚙</span>
-              <h3 class="category-title">Ferramentas de Desenvolvimento</h3>
+              <span class="category-icon-box" aria-hidden="true">⚙</span>
+              <h2 class="category-title">Ferramentas de Desenvolvimento</h2>
             </div>
             <ul class="skill-items-list">
               <li class="skill-item">
                 <span class="skill-name">Git &amp; GitHub</span>
-                <span class="skill-detail">Controle de versão, commits, branches e publicação</span>
+                <span class="skill-detail">Versionamento, commits, branches e publicação</span>
               </li>
               <li class="skill-item">
                 <span class="skill-name">VS Code</span>
-                <span class="skill-detail">Ambiente principal de desenvolvimento e extensões</span>
+                <span class="skill-detail">Editor principal, extensões e depuração de código</span>
               </li>
               <li class="skill-item">
                 <span class="skill-name">Vercel</span>
-                <span class="skill-detail">Deploy contínuo de frontend estático e serverless</span>
+                <span class="skill-detail">Deploy de frontend estático e APIs serverless</span>
               </li>
             </ul>
           </div>
 
-          <!-- 6. Redes & Linux -->
+          <!-- 6. Infraestrutura & Fundamentos -->
           <div class="skill-category-card">
             <div class="skill-card-header">
-              <span class="category-icon" aria-hidden="true">🛡</span>
-              <h3 class="category-title">Infraestrutura &amp; Fundamentos</h3>
+              <span class="category-icon-box" aria-hidden="true">🛡</span>
+              <h2 class="category-title">Infraestrutura &amp; Fundamentos</h2>
             </div>
             <ul class="skill-items-list">
               <li class="skill-item">
                 <span class="skill-name">Redes de Computadores</span>
-                <span class="skill-detail">Protocolos básicos, endereçamento IP e funcionamento da web</span>
+                <span class="skill-detail">Protocolos web, endereçamento IP e cliente-servidor</span>
               </li>
               <li class="skill-item">
                 <span class="skill-name">Ambiente Linux</span>
-                <span class="skill-detail">Comandos de terminal e navegação em sistemas operacionais</span>
+                <span class="skill-detail">Comandos de terminal e navegação no sistema</span>
               </li>
               <li class="skill-item">
-                <span class="skill-name">Fundamentos de Cibersegurança</span>
-                <span class="skill-detail">Princípios de proteção, senhas e boas práticas</span>
+                <span class="skill-name">Segurança da Informação</span>
+                <span class="skill-detail">Princípios de proteção, senhas e boas práticas de código</span>
               </li>
             </ul>
           </div>
@@ -628,11 +652,11 @@ app.<span class="token-fn">get</span>(<span class="token-str">'/api/health'</spa
       </div>
     </section>
 
-    <!-- ========================================================================
-         SEÇÃO 5: CONTATO FUNCIONAL
-         ======================================================================== -->
-    <section class="content-section" id="contato" aria-label="Contato e canais de comunicação">
-      <div class="section-container">
+    <!-- ====================================================================
+         PÁGINA 5: CONTATO
+         ==================================================================== -->
+    <section class="page-view" id="contato" aria-label="Página de Contato e Comunicação">
+      <div class="page-container">
 
         <div class="section-header">
           <div class="section-eyebrow">
@@ -641,9 +665,9 @@ app.<span class="token-fn">get</span>(<span class="token-str">'/api/health'</spa
             <span class="eyebrow-divider">/</span>
             <span class="eyebrow-sub">VAMOS CONVERSAR?</span>
           </div>
-          <h2 class="section-title">Disponível para trocar ideias sobre tecnologia, projetos e oportunidades acadêmicas.</h2>
+          <h1 class="section-title">Disponível para trocar ideias sobre tecnologia, projetos e oportunidades acadêmicas.</h1>
           <p class="section-subtitle">
-            Você pode me contatar diretamente pelo GitHub ou preencher o formulário abaixo para preparar sua mensagem no seu cliente de e-mail.
+            Você pode acessar meus projetos no GitHub ou preencher o formulário para preparar sua mensagem diretamente no seu aplicativo de e-mail.
           </p>
         </div>
 
@@ -655,15 +679,15 @@ app.<span class="token-fn">get</span>(<span class="token-str">'/api/health'</spa
             <div class="contact-channel-card">
               <div class="channel-top">
                 <span class="channel-icon" aria-hidden="true">⌥</span>
-                <span class="channel-label">REPOSITÓRIOS &amp; ATIVIDADE</span>
+                <span class="channel-label">REPOSITÓRIOS PÚBLICOS</span>
               </div>
-              <h3 class="channel-title">GitHub Oficial</h3>
+              <h2 class="channel-title">GitHub Oficial</h2>
               <p class="channel-desc">
                 Veja o histórico de commits, projetos acadêmicos e código das aplicações que desenvolvi.
               </p>
               <a href="https://github.com/laurabrilhantetorrano" target="_blank" rel="noopener noreferrer" class="cta-button primary-cta project-btn">
                 <span>github.com/laurabrilhantetorrano</span>
-                <span class="cta-icon-box">↗</span>
+                <span class="cta-icon-box" aria-hidden="true">↗</span>
               </a>
             </div>
 
@@ -672,9 +696,9 @@ app.<span class="token-fn">get</span>(<span class="token-str">'/api/health'</spa
                 <span class="channel-icon" aria-hidden="true">✉</span>
                 <span class="channel-label">E-MAIL DIRETO</span>
               </div>
-              <h3 class="channel-title">Contato Acadêmico</h3>
+              <h2 class="channel-title">Contato Acadêmico</h2>
               <p class="channel-desc">
-                Abra seu aplicativo de e-mail com destinatário pronto para envio:
+                Envie uma mensagem diretamente para o meu endereço de e-mail institucional:
               </p>
               <a href="mailto:37241@raphaeldisanto.com.br?subject=Contato%20via%20Portf%C3%B3lio%20-%20Laura%20Brilhante" class="direct-email-link">
                 37241@raphaeldisanto.com.br
@@ -690,14 +714,14 @@ app.<span class="token-fn">get</span>(<span class="token-str">'/api/health'</spa
 
           </div>
 
-          <!-- Coluna 2: Formulário Funcional (sem envio falso) -->
+          <!-- Coluna 2: Formulário com Validação Real -->
           <div class="contact-form-col">
             <div class="form-container-card">
               
               <div class="form-card-header">
-                <h3 class="form-card-title">Preparar Mensagem</h3>
+                <h2 class="form-card-title">Preparar Mensagem</h2>
                 <p class="form-card-notice">
-                  *Como este site é estático (sem backend de envio automático), ao clicar em enviar sua mensagem será preparada no seu leitor de e-mail padrão.
+                  *Este site estático prepara os dados no seu leitor de e-mail padrão ao clicar em enviar, sem intermediários falsos.
                 </p>
               </div>
 
@@ -730,25 +754,25 @@ app.<span class="token-fn">get</span>(<span class="token-str">'/api/health'</spa
                 <div class="form-submit-row">
                   <button type="submit" class="cta-button primary-cta submit-btn" id="submitContactBtn">
                     <span>Preparar no E-mail</span>
-                    <span class="cta-icon-box">↗</span>
+                    <span class="cta-icon-box" aria-hidden="true">↗</span>
                   </button>
                 </div>
 
               </form>
 
-              <!-- Caixa de Feedback Honesto após Validação -->
+              <!-- Caixa de Feedback após Validação -->
               <div class="form-feedback-box" id="formFeedbackBox" style="display: none;" role="status">
                 <div class="feedback-icon" aria-hidden="true">✓</div>
                 <div class="feedback-content">
-                  <h4 class="feedback-title">Tudo pronto!</h4>
+                  <h3 class="feedback-title">Mensagem Pronta!</h3>
                   <p class="feedback-text" id="feedbackMessageText">
-                    Seu aplicativo de e-mail foi acionado com a mensagem preenchida. Se a janela não abriu automaticamente, você pode usar os botões abaixo:
+                    Seu leitor de e-mail foi acionado com os dados preenchidos. Caso a janela não tenha aberto, você pode copiar os dados abaixo:
                   </p>
                   <div class="feedback-actions">
                     <button type="button" class="cta-button secondary-cta mini-btn" id="copyMessageBtn">
                       <span>Copiar texto da mensagem</span>
                     </button>
-                    <a href="#" id="directMailtoTrigger" class="link-inline">
+                    <a href="#" id="directMailtoTrigger" class="link-editorial">
                       <span>Tentar abrir e-mail novamente</span>
                     </a>
                   </div>
@@ -773,31 +797,31 @@ app.<span class="token-fn">get</span>(<span class="token-str">'/api/health'</spa
       
       <div class="footer-brand-col">
         <div class="footer-logo">
-          <span class="footer-gothic">𝕷</span>
+          <span class="footer-gothic" aria-hidden="true">𝕷</span>
           <span class="footer-name">Laura Brilhante Torrano</span>
         </div>
         <p class="footer-bio">
-          Estudante de Tecnologia da Informação. Desenvolvimento de software, interfaces digitais e rumo à Engenharia.
+          Estudante de Tecnologia da Informação. Desenvolvimento de software, interfaces limpas e rumo à Engenharia.
         </p>
       </div>
 
       <div class="footer-nav-col">
-        <h4 class="footer-heading">Navegação</h4>
+        <h3 class="footer-heading">Páginas</h3>
         <ul class="footer-links">
-          <li><a href="#hero">Início</a></li>
-          <li><a href="#sobre">Sobre mim</a></li>
-          <li><a href="#projetos">Projetos</a></li>
-          <li><a href="#habilidades">Habilidades</a></li>
-          <li><a href="#contato">Contato</a></li>
+          <li><a href="#hero" data-page="hero">Início</a></li>
+          <li><a href="#sobre" data-page="sobre">Sobre mim</a></li>
+          <li><a href="#projetos" data-page="projetos">Projetos</a></li>
+          <li><a href="#habilidades" data-page="habilidades">Habilidades</a></li>
+          <li><a href="#contato" data-page="contato">Contato</a></li>
         </ul>
       </div>
 
       <div class="footer-info-col">
-        <h4 class="footer-heading">Diretrizes</h4>
-        <p class="footer-note">Desenvolvido em HTML5, CSS3 e JavaScript puro sem frameworks.</p>
-        <p class="footer-note">Modo escuro exclusivo · Paleta oficial #FF63F8 &amp; #FF6B8C.</p>
-        <a href="#hero" class="back-to-top-btn" id="backToTopBtn" aria-label="Voltar ao início da página">
-          <span>Voltar ao topo</span>
+        <h3 class="footer-heading">Diretrizes</h3>
+        <p class="footer-note">HTML5, CSS3 e JavaScript puro sem dependências ou frameworks.</p>
+        <p class="footer-note">Identidade visual oficial: #FF63F8, #FF6B8C e #FFE0E8.</p>
+        <a href="#hero" data-page="hero" class="back-to-top-btn" id="backToTopBtn" aria-label="Voltar para a página inicial">
+          <span>Início do Portfólio</span>
           <span class="top-arrow" aria-hidden="true">↑</span>
         </a>
       </div>
@@ -808,8 +832,8 @@ app.<span class="token-fn">get</span>(<span class="token-str">'/api/health'</spa
       <div class="footer-bottom-inner">
         <p class="footer-copy">© 2026 Laura Brilhante Torrano. Todos os direitos reservados.</p>
         <p class="footer-repo-link">
-          <a href="https://github.com/laurabrilhantetorrano/port-bri" target="_blank" rel="noopener noreferrer">
-            Código-fonte no GitHub
+          <a href="https://github.com/laurabrilhantetorrano" target="_blank" rel="noopener noreferrer">
+            github.com/laurabrilhantetorrano
           </a>
         </p>
       </div>

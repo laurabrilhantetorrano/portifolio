@@ -194,224 +194,360 @@ textarea:focus-visible {
 }
 
 /* ==========================================================================
-   4.1 TELA INICIAL EXCLUSIVA: PORTAL INTIMISTA E AUTÊNTICO
-   Mostra unicamente o nome LAURA BRILHANTE TORRANO e a estrela interativa.
-   Nenhuma outra área é visível até o clique/toque na estrela.
+   4.1 TELA INICIAL: CÉU NOTURNO IMERSIVO & DESENHO INTERATIVO DA ESTRELA
+   Ao abrir, exibe apenas o céu estrelado e "Desenhe uma estrela no céu ✨".
+   O nome LAURA BRILHANTE TORRANO só surge após a conclusão de 100%.
    ========================================================================== */
-.intro-portal {
+.night-sky-portal {
   position: fixed;
   inset: 0;
   width: 100vw;
   height: 100vh;
   z-index: 99990;
-  background-color: #0c0510;
+  background: radial-gradient(ellipse at 50% 25%, #0a132c 0%, #050b1a 45%, #020409 100%);
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 2.5rem 1.75rem;
   overflow: hidden;
-  transition: opacity 0.85s cubic-bezier(0.22, 1, 0.36, 1),
-              visibility 0.85s cubic-bezier(0.22, 1, 0.36, 1),
-              transform 0.85s cubic-bezier(0.22, 1, 0.36, 1);
-  will-change: opacity, transform;
-}
-
-[data-theme="brand"] .intro-portal {
-  background-color: #FAF4F7;
-}
-
-/* Fundo suave com iluminação discreta e orgânica */
-.intro-backdrop-light {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  background: radial-gradient(circle at 50% 50%, rgba(255, 99, 248, 0.08) 0%, rgba(255, 107, 140, 0.04) 38%, transparent 72%);
-  transition: opacity 0.4s ease;
-}
-
-[data-theme="brand"] .intro-backdrop-light {
-  background: radial-gradient(circle at 50% 50%, rgba(216, 27, 133, 0.07) 0%, rgba(255, 107, 140, 0.04) 40%, transparent 75%);
-}
-
-.intro-star-dust {
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  opacity: 0.22;
-  background-image: radial-gradient(rgba(255, 224, 232, 0.16) 1px, transparent 1px);
-  background-size: 52px 52px;
-  mask-image: radial-gradient(circle at 50% 50%, black 35%, transparent 80%);
-  -webkit-mask-image: radial-gradient(circle at 50% 50%, black 35%, transparent 80%);
-}
-
-/* Palco Centralizado com Proporções Áureas */
-.intro-center-stage {
-  position: relative;
-  z-index: 2;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  max-width: 1040px;
-  margin: 0 auto;
-  gap: clamp(2.4rem, 6vh, 4.2rem);
-}
-
-/* Nome com tipografia sofisticada, delicada, humana e natural */
-.intro-name-display {
-  font-family: var(--font-serif);
-  font-weight: 300;
-  font-size: clamp(2.1rem, 5.8vw, 4.6rem);
-  line-height: 1.14;
-  letter-spacing: clamp(0.14em, 0.38vw, 0.28em);
-  text-transform: uppercase;
-  color: var(--color-highlight);
-  margin: 0;
+  touch-action: none;
   user-select: none;
-  transition: color 0.4s ease, text-shadow 0.4s ease;
-  text-shadow: 0 4px 35px rgba(255, 99, 248, 0.2);
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  gap: 0.3em 0.5em;
+  -webkit-user-select: none;
+  transition: opacity 0.85s cubic-bezier(0.22, 1, 0.36, 1),
+              visibility 0.85s cubic-bezier(0.22, 1, 0.36, 1);
 }
 
-[data-theme="brand"] .intro-name-display {
-  color: #1E071D;
-  text-shadow: 0 4px 35px rgba(216, 27, 133, 0.14);
+/* Canvas para céu estrelado, rastro de luz e partículas */
+.night-sky-canvas {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  display: block;
+  touch-action: none;
+  cursor: crosshair;
 }
 
-.name-part {
-  display: inline-block;
-  white-space: nowrap;
-}
-
-/* O elemento interativo único: Estrela Delicada */
-.intro-star-wrapper {
+/* Instrução Central Poética */
+.sky-instruction-box {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 2;
+  text-align: center;
+  pointer-events: none;
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 1.15rem;
+  gap: 0.6rem;
+  transition: opacity 0.6s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-.intro-star-trigger {
-  background: transparent;
-  border: none;
-  padding: 20px;
-  cursor: pointer;
-  position: relative;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  border-radius: 50%;
-  outline: none;
-  touch-action: manipulation;
-  -webkit-tap-highlight-color: transparent;
-  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
-}
-
-/* SVG da Estrela Delicada */
-.star-svg-delicate {
-  width: clamp(52px, 7vw, 68px);
-  height: clamp(52px, 7vw, 68px);
-  color: var(--color-primary);
-  filter: drop-shadow(0 0 16px rgba(255, 99, 248, 0.38));
-  animation: starGentleBreathe 4.5s ease-in-out infinite;
-  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
-              filter 0.5s ease,
-              opacity 0.4s ease;
-}
-
-[data-theme="brand"] .star-svg-delicate {
-  filter: drop-shadow(0 0 16px rgba(216, 27, 133, 0.32));
-}
-
-/* Pulso lento, discreto e natural da estrela */
-@keyframes starGentleBreathe {
-  0%, 100% {
-    transform: scale(1);
-    filter: drop-shadow(0 0 14px rgba(255, 99, 248, 0.32));
-  }
-  50% {
-    transform: scale(1.07);
-    filter: drop-shadow(0 0 26px rgba(255, 99, 248, 0.65));
-  }
-}
-
-/* Interação com a Estrela ao passar o mouse ou focar */
-.intro-star-trigger:hover .star-svg-delicate,
-.intro-star-trigger:focus-visible .star-svg-delicate {
-  animation: none;
-  transform: scale(1.18) rotate(45deg);
-  filter: drop-shadow(0 0 32px var(--color-primary));
-}
-
-.intro-star-trigger:focus-visible {
-  outline: 2px solid var(--color-primary);
-  outline-offset: 8px;
-}
-
-/* Micro-anel de pulsação suave */
-.star-pulse-ring {
-  position: absolute;
-  inset: 6px;
-  border-radius: 50%;
-  border: 1px solid rgba(255, 224, 232, 0.22);
-  pointer-events: none;
-  animation: ringPulse 4.5s ease-in-out infinite;
-  opacity: 0.5;
-  transition: transform 0.6s ease-out, opacity 0.6s ease-out;
-}
-
-@keyframes ringPulse {
-  0%, 100% {
-    transform: scale(0.92);
-    opacity: 0.2;
-  }
-  50% {
-    transform: scale(1.22);
-    opacity: 0.55;
-  }
-}
-
-/* Efeito no clique: a estrela se abre revelando o projeto */
-.intro-star-trigger.is-activating .star-svg-delicate {
-  transform: scale(1.4) rotate(90deg);
-  filter: drop-shadow(0 0 45px var(--color-primary));
-  opacity: 0.95;
-  transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1), filter 0.45s ease;
-}
-
-.intro-star-trigger.is-activating .star-pulse-ring {
-  transform: scale(2.2);
+.sky-instruction-box.is-hidden {
   opacity: 0;
+  transform: translate(-50%, -46%) scale(0.96);
+  pointer-events: none;
 }
 
-/* Micro-legenda discreta e refinada */
-.intro-star-hint {
+.sky-instruction-sparkle {
+  font-size: 1.25rem;
+  color: #FFE0E8;
+  opacity: 0.8;
+  animation: sparkleBreathe 3.5s ease-in-out infinite;
+}
+
+@keyframes sparkleBreathe {
+  0%, 100% {
+    transform: scale(0.9) rotate(0deg);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1.15) rotate(45deg);
+    opacity: 0.95;
+    filter: drop-shadow(0 0 10px rgba(255, 224, 232, 0.8));
+  }
+}
+
+.sky-instruction-text {
+  font-family: var(--font-serif);
+  font-size: clamp(1.3rem, 2.8vw, 1.95rem);
+  font-weight: 300;
+  letter-spacing: 0.14em;
+  color: #FFF6FA;
+  margin: 0;
+  text-shadow: 0 0 20px rgba(255, 230, 245, 0.4), 0 0 45px rgba(255, 99, 248, 0.2);
+}
+
+.sky-instruction-sub {
   font-family: var(--font-tech);
   font-size: 0.72rem;
-  letter-spacing: 0.28em;
+  letter-spacing: 0.24em;
   text-transform: uppercase;
-  color: var(--color-text-muted);
-  opacity: 0.45;
-  transition: opacity 0.35s ease, transform 0.35s ease, color 0.35s ease;
-  pointer-events: none;
-  user-select: none;
+  color: rgba(255, 224, 232, 0.55);
 }
 
-.intro-star-wrapper:hover .intro-star-hint,
-.intro-star-trigger:focus-visible ~ .intro-star-hint {
-  opacity: 0.95;
-  color: var(--color-highlight);
-  transform: translateY(-2px);
+/* HUD Discreto de Progresso Real (0% a 100%) */
+.sky-progress-hud {
+  position: absolute;
+  bottom: 2.8rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.35rem 0.95rem;
+  background: rgba(8, 14, 32, 0.55);
+  border: 1px solid rgba(255, 224, 232, 0.12);
+  border-radius: var(--radius-pill);
+  backdrop-filter: blur(8px);
+  -webkit-backdrop-filter: blur(8px);
+  pointer-events: none;
+  opacity: 0.65;
+  transition: opacity 0.3s ease, border-color 0.3s ease;
+}
+
+.sky-progress-icon {
+  font-size: 0.75rem;
+  color: #FFD166;
+  transition: transform 0.2s ease;
+}
+
+.sky-progress-val {
+  font-family: var(--font-tech);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.14em;
+  color: #FFE0E8;
+  min-width: 38px;
+  text-align: right;
+}
+
+.sky-progress-hud.is-celebrating {
+  border-color: rgba(255, 209, 102, 0.6);
+  opacity: 0;
+  transform: translateX(-50%) translateY(10px);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+}
+
+/* Botão Discreto de Limpar Traço / Recomeçar */
+.sky-reset-btn {
+  position: absolute;
+  bottom: 2.7rem;
+  right: 2.5rem;
+  z-index: 3;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.4rem 0.85rem;
+  background: transparent;
+  border: 1px solid rgba(255, 224, 232, 0.12);
+  border-radius: var(--radius-pill);
+  color: rgba(255, 224, 232, 0.5);
+  font-family: var(--font-tech);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.sky-reset-btn:hover {
+  background: rgba(255, 224, 232, 0.08);
+  border-color: rgba(255, 224, 232, 0.35);
+  color: #FFF6FA;
+}
+
+.reset-icon {
+  font-size: 0.8rem;
+  transition: transform 0.3s ease;
+}
+
+.sky-reset-btn:hover .reset-icon {
+  transform: rotate(-90deg);
+}
+
+@media (max-width: 600px) {
+  .sky-reset-btn {
+    right: 1.25rem;
+    bottom: 2.2rem;
+    padding: 0.35rem 0.65rem;
+  }
+  .reset-text {
+    display: none;
+  }
 }
 
 /* ==========================================================================
-   ESTADO INICIAL: REVELAÇÃO DO PROJETO
-   Regra principal: Nenhuma outra seção, menu ou funcionalidade deve aparecer
-   antes de clicar na estrela.
+   REVELAÇÃO MÁGICA AOS 100%
+   Surge no centro do céu estrelado quando a estrela de 5 pontas for completada
+   ========================================================================== */
+.sky-revealed-container {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  z-index: 4;
+  text-align: center;
+  width: 90%;
+  max-width: 980px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: clamp(1.4rem, 3.5vh, 2.4rem);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 1.4s cubic-bezier(0.16, 1, 0.3, 1),
+              visibility 1.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.sky-revealed-container.is-active {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+}
+
+.revealed-celestial-burst {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 450px;
+  height: 450px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(255, 235, 180, 0.16) 0%, rgba(255, 99, 248, 0.08) 45%, transparent 70%);
+  filter: blur(35px);
+  pointer-events: none;
+  animation: burstPulse 6s ease-in-out infinite;
+}
+
+@keyframes burstPulse {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(0.95);
+    opacity: 0.6;
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.15);
+    opacity: 0.95;
+  }
+}
+
+/* Nome com tipografia sofisticada, delicada, marcante e refinada */
+.revealed-name {
+  position: relative;
+  font-family: var(--font-serif);
+  font-weight: 300;
+  font-size: clamp(2.2rem, 5.8vw, 4.8rem);
+  line-height: 1.15;
+  letter-spacing: clamp(0.16em, 0.4vw, 0.3em);
+  text-transform: uppercase;
+  color: #FFF8FA;
+  margin: 0;
+  user-select: none;
+  text-shadow: 0 0 25px rgba(255, 240, 248, 0.7),
+               0 0 55px rgba(255, 99, 248, 0.35),
+               0 4px 30px rgba(0, 0, 0, 0.8);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.3em 0.55em;
+  animation: nameRevealFloat 1.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes nameRevealFloat {
+  0% {
+    opacity: 0;
+    transform: translateY(18px) scale(0.96);
+    filter: blur(8px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+    filter: blur(0);
+  }
+}
+
+.revealed-tagline {
+  position: relative;
+  font-family: var(--font-tech);
+  font-size: clamp(0.75rem, 1.4vw, 0.95rem);
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: #FFE0E8;
+  opacity: 0.85;
+  margin: 0;
+  animation: fadeInDelay 1.8s ease forwards;
+}
+
+@keyframes fadeInDelay {
+  0%, 40% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  100% {
+    opacity: 0.85;
+    transform: translateY(0);
+  }
+}
+
+/* Botão de Exploração do Portfólio (surge suavemente após revelação) */
+.revealed-enter-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.65rem;
+  padding: 0.75rem 1.75rem;
+  background: rgba(255, 224, 232, 0.08);
+  border: 1px solid rgba(255, 224, 232, 0.3);
+  border-radius: var(--radius-pill);
+  color: #FFFFFF;
+  font-family: var(--font-tech);
+  font-size: 0.82rem;
+  font-weight: 600;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  cursor: pointer;
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4), 0 0 15px rgba(255, 99, 248, 0.2);
+  animation: enterBtnFade 2.2s ease forwards;
+}
+
+@keyframes enterBtnFade {
+  0%, 60% {
+    opacity: 0;
+    transform: translateY(12px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.revealed-enter-btn:hover {
+  background: rgba(255, 99, 248, 0.25);
+  border-color: #FF63F8;
+  color: #FFF6FA;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 26px rgba(255, 99, 248, 0.4);
+}
+
+.enter-btn-star {
+  font-size: 0.9rem;
+  color: #FFD166;
+  transition: transform 0.35s ease;
+}
+
+.revealed-enter-btn:hover .enter-btn-star {
+  transform: rotate(45deg) scale(1.25);
+}
+
+/* ==========================================================================
+   ESTADO DO PROJETO: CONTEÚDO OCULTO ATÉ REVELAÇÃO E ENTRADA
    ========================================================================== */
 body:not(.portal-opened) {
   overflow: hidden !important;
@@ -427,11 +563,14 @@ body:not(.portal-opened) .site-footer {
   transform: translateY(24px);
 }
 
-body.portal-opened .intro-portal {
+body.portal-opened .night-sky-portal {
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
-  transform: scale(1.025);
+  transform: scale(1.02);
+  transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+              visibility 0.85s;
 }
 
 body.portal-opened .site-header,

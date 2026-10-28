@@ -29,53 +29,52 @@
   <div class="ambient-glow" aria-hidden="true"></div>
 
   <!-- ========================================================================
-       TELA INICIAL EXCLUSIVA: PORTAL INTIMISTA COM ESTRELA
-       Exibe exclusivamente o nome LAURA BRILHANTE TORRANO e a estrela interativa.
-       Nenhuma outra seção, menu ou funcionalidade aparece antes dessa interação.
+       TELA INICIAL: CÉU NOTURNO & DESENHO INTERATIVO DA ESTRELA
+       Exibe exclusivamente um céu noturno profundo com estrelas cintilantes e a instrução:
+       "Desenhe uma estrela no céu ✨". O nome LAURA BRILHANTE TORRANO é revelado
+       somente quando a estrela de cinco pontas for 100% desenhada e reconhecida.
        ======================================================================== -->
-  <section class="intro-portal" id="introPortal" aria-label="Tela Inicial - Laura Brilhante Torrano">
-    <div class="intro-backdrop-light" aria-hidden="true"></div>
-    <div class="intro-star-dust" aria-hidden="true"></div>
+  <section class="night-sky-portal" id="nightSkyPortal" aria-label="Céu Noturno Interativo - Laura Brilhante Torrano">
+    <!-- Canvas em tela cheia para o céu estrelado, estrelas cintilantes, rastro luminoso e partículas -->
+    <canvas id="nightSkyCanvas" class="night-sky-canvas"></canvas>
 
-    <div class="intro-center-stage">
-      <!-- O grande destaque visual: Nome Completo com tipografia sofisticada e delicada -->
-      <h1 class="intro-name-display" id="introNameDisplay">
+    <!-- Instrução central discreta e poética que desaparece ao começar a desenhar -->
+    <div class="sky-instruction-box" id="skyInstructionBox">
+      <div class="sky-instruction-sparkle" aria-hidden="true">✦</div>
+      <p class="sky-instruction-text" id="skyInstructionText">Desenhe uma estrela no céu ✨</p>
+      <span class="sky-instruction-sub">Em um único traço contínuo</span>
+    </div>
+
+    <!-- HUD de progresso real e discreto (0% a 100%) -->
+    <div class="sky-progress-hud" id="skyProgressHud" aria-live="polite">
+      <span class="sky-progress-icon" aria-hidden="true">✦</span>
+      <span class="sky-progress-val" id="skyProgressVal">0%</span>
+    </div>
+
+    <!-- Container da Revelação Mágica aos 100% (Permanece oculto até a conclusão da estrela) -->
+    <div class="sky-revealed-container" id="skyRevealedContainer" aria-hidden="true">
+      <div class="revealed-celestial-burst" aria-hidden="true"></div>
+      
+      <h1 class="revealed-name" id="revealedName">
         <span class="name-part">LAURA</span>
         <span class="name-part">BRILHANTE</span>
         <span class="name-part">TORRANO</span>
       </h1>
 
-      <!-- Único elemento interativo: A Estrela Delicada -->
-      <div class="intro-star-wrapper">
-        <button class="intro-star-trigger" id="introStarBtn" type="button" aria-label="Acessar o portfólio de Laura Brilhante Torrano" title="Tocar na estrela para descobrir">
-          <svg class="star-svg-delicate" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
-            <defs>
-              <radialGradient id="starGlow" cx="50%" cy="50%" r="50%">
-                <stop offset="0%" stop-color="#FFE0E8" stop-opacity="0.95"/>
-                <stop offset="40%" stop-color="#FF63F8" stop-opacity="0.55"/>
-                <stop offset="75%" stop-color="#FF6B8C" stop-opacity="0.18"/>
-                <stop offset="100%" stop-color="#FF63F8" stop-opacity="0"/>
-              </radialGradient>
-              <filter id="starSoftBloom" x="-40%" y="-40%" width="180%" height="180%">
-                <feGaussianBlur stdDeviation="3" result="blur"/>
-                <feComposite in="SourceGraphic" in2="blur" operator="over"/>
-              </filter>
-            </defs>
-            <!-- Aura suave de brilho difuso -->
-            <circle class="star-ambient-aura" cx="36" cy="36" r="32" fill="url(#starGlow)"/>
-            <!-- Estrela esbelta de 4 pontas celestiais -->
-            <path class="star-body" d="M36 4 C36 21 44 29 68 36 C44 43 36 51 36 68 C36 51 28 43 4 36 C28 29 36 21 36 4 Z" fill="#FFE0E8" filter="url(#starSoftBloom)"/>
-            <!-- Feixes cruzados ultra-finos em marfim -->
-            <line x1="36" y1="16" x2="36" y2="56" stroke="#FFFFFF" stroke-width="0.8" stroke-linecap="round" stroke-opacity="0.75"/>
-            <line x1="16" y1="36" x2="56" y2="36" stroke="#FFFFFF" stroke-width="0.8" stroke-linecap="round" stroke-opacity="0.75"/>
-            <!-- Ponto central de luz pura -->
-            <circle class="star-nucleus" cx="36" cy="36" r="2.2" fill="#FFFFFF"/>
-          </svg>
-          <span class="star-pulse-ring" aria-hidden="true"></span>
-        </button>
-        <span class="intro-star-hint" aria-hidden="true">Descobrir</span>
-      </div>
+      <p class="revealed-tagline">Estudante de Tecnologia · Rumo à Engenharia de Software</p>
+
+      <!-- Botão para explorar o restante do portfólio -->
+      <button class="revealed-enter-btn" id="revealedEnterBtn" type="button" aria-label="Explorar o portfólio de Laura Brilhante Torrano">
+        <span>Explorar Portfólio</span>
+        <span class="enter-btn-star" aria-hidden="true">✦</span>
+      </button>
     </div>
+
+    <!-- Botão discreto para limpar traço e tentar novamente -->
+    <button class="sky-reset-btn" id="skyResetBtn" type="button" aria-label="Limpar desenho e tentar novamente" title="Limpar traço">
+      <span class="reset-icon" aria-hidden="true">↺</span>
+      <span class="reset-text">Limpar traço</span>
+    </button>
   </section>
 
   <!-- ========================================================================

@@ -6,7 +6,7 @@
   <title>Laura Brilhante Torrano — Portfólio</title>
   <meta name="description" content="Portfólio de Laura Brilhante Torrano. Estudante do ensino médio técnico em TI, com foco em desenvolvimento de software e rumo à Engenharia de Software e da Computação.">
   
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%23060C1A%22/><text y=%2268%22 x=%2250%22 font-size=%2256%22 font-family=%22serif%22 font-weight=%22400%22 text-anchor=%22middle%22 fill=%22%23D4A843%22>L</text></svg>">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2220%22 fill=%22%230B0F19%22/><text y=%2268%22 x=%2250%22 font-size=%2256%22 font-family=%22serif%22 font-weight=%22400%22 text-anchor=%22middle%22 fill=%22%23C5A059%22>L</text></svg>">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,7 +16,10 @@
 </head>
 <body>
 
-  <!-- Cursor Personalizado -->
+  <!-- Link de Acessibilidade: Pular para o Conteúdo -->
+  <a href="#mainContent" class="skip-to-content">Pular para o conteúdo principal</a>
+
+  <!-- Cursor Personalizado (Suave e não invasivo, desativado em telas touch) -->
   <div class="custom-cursor" id="customCursor" aria-hidden="true">
     <div class="cursor-dot" id="cursorDot"></div>
     <div class="cursor-ring" id="cursorRing"></div>
@@ -26,13 +29,11 @@
   <canvas class="bg-stars-canvas" id="bgStarsCanvas" aria-hidden="true"></canvas>
 
   <!-- ================================================================
-       PORTAL — CÉU NOTURNO COM NOME
-       O nome já aparece diretamente, sem necessidade de desenhar.
+       PORTAL — CÉU NOTURNO COM APRESENTAÇÃO
        ================================================================ -->
-  <section class="night-sky-portal" id="nightSkyPortal" aria-label="Céu Noturno — Laura Brilhante Torrano">
-    <canvas id="nightSkyCanvas" class="night-sky-canvas"></canvas>
+  <section class="night-sky-portal" id="nightSkyPortal" aria-label="Portal de Entrada — Laura Brilhante Torrano">
+    <canvas id="nightSkyCanvas" class="night-sky-canvas" aria-hidden="true"></canvas>
 
-    <!-- Nome revelado diretamente sobre o céu -->
     <div class="sky-revealed-container is-active" id="skyRevealedContainer">
       <div class="revealed-celestial-burst" aria-hidden="true"></div>
       
@@ -44,7 +45,7 @@
 
       <p class="revealed-tagline">Estudante de TI · Futura Engenheira de Software</p>
 
-      <button class="revealed-enter-btn" id="revealedEnterBtn" type="button">
+      <button class="revealed-enter-btn" id="revealedEnterBtn" type="button" aria-label="Entrar e explorar o portfólio">
         <span class="enter-btn-star" aria-hidden="true">✦</span>
         <span>Explorar Portfólio</span>
       </button>
@@ -59,7 +60,7 @@
       
       <a href="#hero" class="brand-link" id="brandLink" aria-label="Laura Brilhante Torrano — Início">
         <span class="brand-star" aria-hidden="true">✦</span>
-        <span class="brand-name">Laura Brilhante Torrano</span>
+        <span class="brand-name">Laura Brilhante<span class="brand-surname"> Torrano</span></span>
       </a>
 
       <div class="header-status" id="headerStatus">
@@ -76,17 +77,17 @@
           <a href="#contato" class="nav-link" data-page="contato" id="navContato">Contato</a>
         </nav>
 
-        <button class="portal-return-btn" id="portalReturnBtn" type="button" aria-label="Voltar ao céu noturno" title="Voltar ao céu noturno">
+        <button class="portal-return-btn" id="portalReturnBtn" type="button" aria-label="Voltar ao portal da tela inicial" title="Voltar ao céu noturno">
           <span class="portal-star-icon" aria-hidden="true">✨</span>
           <span class="portal-btn-text">Céu</span>
         </button>
 
-        <button class="theme-toggle-btn" id="themeToggleBtn" type="button" aria-label="Alternar tema" title="Alternar tema">
+        <button class="theme-toggle-btn" id="themeToggleBtn" type="button" aria-label="Alternar tema entre claro e escuro" title="Alternar tema">
           <span class="theme-icon" aria-hidden="true">◐</span>
           <span class="theme-label" id="themeLabel">Modo Claro</span>
         </button>
 
-        <button class="mobile-toggle-btn" id="mobileMenuBtn" type="button" aria-label="Abrir menu" aria-expanded="false" aria-controls="mobileNavDrawer">
+        <button class="mobile-toggle-btn" id="mobileMenuBtn" type="button" aria-label="Abrir menu de navegação" aria-expanded="false" aria-controls="mobileNavDrawer">
           <span class="toggle-bar"></span>
           <span class="toggle-bar"></span>
           <span class="toggle-bar"></span>
@@ -164,7 +165,7 @@
                 </li>
                 <li class="summary-item">
                   <span class="summary-label">REPOSITÓRIOS</span>
-                  <a href="https://github.com/laurabrilhantetorrano" target="_blank" rel="noopener noreferrer" class="summary-link">
+                  <a href="https://github.com/laurabrilhantetorrano" target="_blank" rel="noopener noreferrer" class="summary-link" aria-label="Acessar perfil de Laura Brilhante Torrano no GitHub em nova aba">
                     github.com/laurabrilhantetorrano ↗
                   </a>
                 </li>
@@ -203,6 +204,17 @@
             <p>
               Meu foco é dar continuidade a essa base ingressando no curso de <strong>Engenharia de Software ou Engenharia da Computação</strong>, me aprofundando em algoritmos, sistemas distribuídos e engenharia de alto nível.
             </p>
+            
+            <div class="about-actions-row">
+              <a href="#projetos" class="btn-text-link primary-link" data-page="projetos">
+                <span>Conhecer Projetos Realizados</span>
+                <span class="arrow-char" aria-hidden="true">→</span>
+              </a>
+              <a href="#contato" class="btn-text-link" data-page="contato">
+                <span>Conversar Comigo</span>
+                <span class="arrow-char" aria-hidden="true">→</span>
+              </a>
+            </div>
           </div>
 
           <div class="about-pillars-col">
@@ -283,13 +295,13 @@
                 <span>Deploy Vercel</span>
               </div>
               <div class="featured-case-links">
-                <a href="https://tcc-theta-ten.vercel.app" target="_blank" rel="noopener noreferrer" class="link-item primary">
+                <a href="https://tcc-theta-ten.vercel.app" target="_blank" rel="noopener noreferrer" class="link-item primary" aria-label="Acessar versão online do TCC em nova aba">
                   Acessar versão online ↗
                 </a>
-                <a href="https://github.com/laurabrilhantetorrano/tcc" target="_blank" rel="noopener noreferrer" class="link-item">
+                <a href="https://github.com/laurabrilhantetorrano/tcc" target="_blank" rel="noopener noreferrer" class="link-item" aria-label="Repositório Frontend do TCC no GitHub em nova aba">
                   Repositório Frontend ↗
                 </a>
-                <a href="https://github.com/laurabrilhantetorrano/back-tcc" target="_blank" rel="noopener noreferrer" class="link-item">
+                <a href="https://github.com/laurabrilhantetorrano/back-tcc" target="_blank" rel="noopener noreferrer" class="link-item" aria-label="Repositório Backend do TCC no GitHub em nova aba">
                   Repositório Backend ↗
                 </a>
               </div>
@@ -328,7 +340,7 @@
                 Aplicação desenvolvida em Java para praticar Programação Orientada a Objetos: estruturação de classes de domínio, encapsulamento de atributos, métodos de cálculo e controle de pedidos.
               </p>
               <div class="project-entry-footer">
-                <a href="https://github.com/laurabrilhantetorrano/Pizzaria" target="_blank" rel="noopener noreferrer" class="project-entry-link">
+                <a href="https://github.com/laurabrilhantetorrano/Pizzaria" target="_blank" rel="noopener noreferrer" class="project-entry-link" aria-label="Ver repositório do Sistema de Pizzaria no GitHub em nova aba">
                   Ver repositório no GitHub ↗
                 </a>
               </div>
@@ -346,10 +358,10 @@
                 Serviço backend com persistência direta no banco NoSQL MongoDB. Rotas em Express para gravação, busca e tratamento de documentos.
               </p>
               <div class="project-entry-footer">
-                <a href="https://github.com/laurabrilhantetorrano/mongodb-gu" target="_blank" rel="noopener noreferrer" class="project-entry-link">
+                <a href="https://github.com/laurabrilhantetorrano/mongodb-gu" target="_blank" rel="noopener noreferrer" class="project-entry-link" aria-label="Ver repositório da API mongodb-gu no GitHub em nova aba">
                   Repositório no GitHub ↗
                 </a>
-                <a href="https://mongodb-gu.vercel.app" target="_blank" rel="noopener noreferrer" class="project-entry-link outline">
+                <a href="https://mongodb-gu.vercel.app" target="_blank" rel="noopener noreferrer" class="project-entry-link outline" aria-label="Ver versão online da API mongodb-gu em nova aba">
                   Versão Online ↗
                 </a>
               </div>
@@ -367,7 +379,7 @@
                 Mecânicas de jogo de RPG programadas em Java puro: fluxo de turnos, atributos de personagens, controle de combate e tomada de decisões.
               </p>
               <div class="project-entry-footer">
-                <a href="https://github.com/laurabrilhantetorrano/rpg-redivo" target="_blank" rel="noopener noreferrer" class="project-entry-link">
+                <a href="https://github.com/laurabrilhantetorrano/rpg-redivo" target="_blank" rel="noopener noreferrer" class="project-entry-link" aria-label="Ver repositório do RPG Redivo no GitHub em nova aba">
                   Ver repositório no GitHub ↗
                 </a>
               </div>
@@ -385,10 +397,10 @@
                 Aplicação de formulário conectada a endpoints de API para envio, persistência e listagem de registros, praticando validação de campos e feedback ao usuário.
               </p>
               <div class="project-entry-footer">
-                <a href="https://github.com/laurabrilhantetorrano/Cadastro-Front-Back-thata" target="_blank" rel="noopener noreferrer" class="project-entry-link">
+                <a href="https://github.com/laurabrilhantetorrano/Cadastro-Front-Back-thata" target="_blank" rel="noopener noreferrer" class="project-entry-link" aria-label="Ver repositório do Sistema de Cadastro no GitHub em nova aba">
                   Repositório no GitHub ↗
                 </a>
-                <a href="https://cadastrofrontbackthata.vercel.app" target="_blank" rel="noopener noreferrer" class="project-entry-link outline">
+                <a href="https://cadastrofrontbackthata.vercel.app" target="_blank" rel="noopener noreferrer" class="project-entry-link outline" aria-label="Ver versão online do Sistema de Cadastro em nova aba">
                   Versão Online ↗
                 </a>
               </div>
@@ -515,14 +527,14 @@
             
             <div class="contact-info-row">
               <span class="info-label">E-MAIL</span>
-              <a href="mailto:37241@raphaeldisanto.com.br?subject=Contato%20via%20Portf%C3%B3lio%20-%20Laura%20Brilhante" class="info-link">
+              <a href="mailto:37241@raphaeldisanto.com.br?subject=Contato%20via%20Portf%C3%B3lio%20-%20Laura%20Brilhante" class="info-link" aria-label="Enviar e-mail para 37241@raphaeldisanto.com.br">
                 37241@raphaeldisanto.com.br
               </a>
             </div>
 
             <div class="contact-info-row">
               <span class="info-label">GITHUB</span>
-              <a href="https://github.com/laurabrilhantetorrano" target="_blank" rel="noopener noreferrer" class="info-link">
+              <a href="https://github.com/laurabrilhantetorrano" target="_blank" rel="noopener noreferrer" class="info-link" aria-label="Perfil de Laura Brilhante Torrano no GitHub em nova aba">
                 github.com/laurabrilhantetorrano ↗
               </a>
             </div>
@@ -537,35 +549,35 @@
 
           <!-- Formulário -->
           <div class="contact-form-col">
-            <form id="contactForm" class="contact-editorial-form" novalidate>
+            <form id="contactForm" class="contact-editorial-form" novalidate aria-label="Formulário de contato">
               
               <div class="form-row">
-                <label for="contactName" class="form-label">Seu Nome</label>
-                <input type="text" id="contactName" name="name" class="form-input" placeholder="Como prefere ser chamado(a)?" required autocomplete="name">
+                <label for="contactName" class="form-label">Seu Nome *</label>
+                <input type="text" id="contactName" name="name" class="form-input" placeholder="Como prefere ser chamado(a)?" required autocomplete="name" aria-describedby="nameError">
                 <span class="field-error" id="nameError" aria-live="polite"></span>
               </div>
 
               <div class="form-row">
-                <label for="contactEmail" class="form-label">Seu E-mail</label>
-                <input type="email" id="contactEmail" name="email" class="form-input" placeholder="seuemail@exemplo.com" required autocomplete="email">
+                <label for="contactEmail" class="form-label">Seu E-mail *</label>
+                <input type="email" id="contactEmail" name="email" class="form-input" placeholder="seuemail@exemplo.com" required autocomplete="email" aria-describedby="emailError">
                 <span class="field-error" id="emailError" aria-live="polite"></span>
               </div>
 
               <div class="form-row">
-                <label for="contactSubject" class="form-label">Assunto</label>
-                <input type="text" id="contactSubject" name="subject" class="form-input" placeholder="Qual o assunto da mensagem?" required>
+                <label for="contactSubject" class="form-label">Assunto *</label>
+                <input type="text" id="contactSubject" name="subject" class="form-input" placeholder="Qual o assunto da mensagem?" required aria-describedby="subjectError">
                 <span class="field-error" id="subjectError" aria-live="polite"></span>
               </div>
 
               <div class="form-row">
-                <label for="contactMessage" class="form-label">Mensagem</label>
-                <textarea id="contactMessage" name="message" class="form-textarea" rows="4" placeholder="Escreva sua mensagem aqui..." required></textarea>
+                <label for="contactMessage" class="form-label">Mensagem *</label>
+                <textarea id="contactMessage" name="message" class="form-textarea" rows="4" placeholder="Escreva sua mensagem aqui (mínimo 10 caracteres)..." required aria-describedby="messageError"></textarea>
                 <span class="field-error" id="messageError" aria-live="polite"></span>
               </div>
 
               <div class="form-submit-line">
                 <button type="submit" class="btn-submit" id="submitContactBtn">
-                  <span>Preparar no E-mail</span>
+                  <span id="submitBtnText">Preparar no E-mail</span>
                   <span class="btn-arrow" aria-hidden="true">→</span>
                 </button>
               </div>
@@ -573,12 +585,12 @@
             </form>
 
             <!-- Feedback pós-envio -->
-            <div class="form-feedback-box" id="formFeedbackBox" style="display: none;" role="status">
+            <div class="form-feedback-box" id="formFeedbackBox" style="display: none;" role="status" aria-live="polite">
               <div class="feedback-icon" aria-hidden="true">✓</div>
               <div class="feedback-content">
                 <h3 class="feedback-title">Mensagem Pronta!</h3>
                 <p class="feedback-text" id="feedbackMessageText">
-                  Seu leitor de e-mail foi acionado com os dados preenchidos. Caso a janela não tenha aberto, você pode copiar os dados abaixo:
+                  Seu leitor de e-mail foi acionado com os dados preenchidos. Caso o aplicativo não tenha aberto, você pode copiar os dados abaixo ou tentar novamente:
                 </p>
                 <div class="feedback-actions">
                   <button type="button" class="mini-action" id="copyMessageBtn">
@@ -613,7 +625,7 @@
         </p>
       </div>
 
-      <nav class="footer-nav-col" aria-label="Navegação secundária">
+      <nav class="footer-nav-col" aria-label="Navegação secundária do rodapé">
         <ul class="footer-links">
           <li><a href="#hero" data-page="hero">Início</a></li>
           <li><a href="#sobre" data-page="sobre">Sobre</a></li>
@@ -624,7 +636,7 @@
       </nav>
 
       <div class="footer-meta-col">
-        <a href="#nightSkyPortal" class="footer-sky-link" id="footerSkyBtn">
+        <a href="#nightSkyPortal" class="footer-sky-link" id="footerSkyBtn" aria-label="Retornar à tela do céu noturno">
           <span>✦ Retornar ao Céu Noturno</span>
         </a>
         <p class="footer-copy">© 2026 Laura Brilhante Torrano. Código autoral em HTML, CSS e JS puro.</p>

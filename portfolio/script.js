@@ -1,426 +1,580 @@
 /**
- * PORTFÓLIO: LAURA BRILHANTE TORRANO
- * JavaScript Puro sem frameworks
- * Funcionalidades:
- * 1. Controlador de Navegação entre Páginas Independentes (View Switcher com History API)
- * 2. Menu Mobile Responsivo com Acessibilidade
- * 3. Relógio em Tempo Real (Horário de Brasília)
- * 4. Alternador de Tema Escuro / Vibrante
- * 5. Validação do Formulário de Contato com Fallback Real (mailto + clipboard)
- * 6. Cursor Personalizado com Interpolação Suave (apenas em desktop)
+ * PORTFÓLIO — LAURA BRILHANTE TORRANO
+ * JavaScript puro, sem frameworks.
+ *
+ * 0. Fundo: Céu estrelado contínuo com respeito ao tema claro/escuro
+ * 1. Portal: Entrada no portfólio e retorno ao céu
+ * 2. Navegação entre páginas independentes e histórico de rotas
+ * 3. Menu mobile responsivo e acessível
+ * 4. Alternador de tema escuro / claro
+ * 5. Formulário de contato com validação e feedback acessível
+ * 6. Cursor personalizado não invasivo
  */
 
 document.addEventListener('DOMContentLoaded', () => {
+  initBgStars();
+  initNightSky();
   initNavigation();
   initMobileMenu();
-  initLiveClock();
   initThemeToggle();
   initContactForm();
   initCustomCursor();
 });
 
 /* ==========================================================================
-   1. CONTROLADOR DE NAVEGAÇÃO ENTRE PÁGINAS INDEPENDENTES
-   Regra: Cada botão leva exclusivamente ao destino definido para ele.
-   Apenas uma página é exibida por vez. Suporte total ao botão Voltar do navegador.
+   0. CÉU ESTRELADO FIXO — FUNDO CONTÍNUO
+   O canvas utiliza clearRect permitindo que a cor de fundo do tema
+   (escuro ou claro) seja exibida via CSS com total fidelidade.
    ========================================================================== */
-function initNavigation() {
-  const pageViews = document.querySelectorAll('.page-view');
-  const desktopLinks = document.querySelectorAll('.nav-menu .nav-link');
-  const mobileLinks = document.querySelectorAll('.mobile-nav-links .mobile-nav-link');
-  const footerLinks = document.querySelectorAll('.footer-links a, .back-to-top-btn');
+function initBgStars() {
+  const canvas = document.getElementById('bgStarsCanvas');
+  if (!canvas) return;
 
-  // Mapeamento de rotas e aliases comuns
-  const aliasMap = {
-    '': 'hero',
-    'inicio': 'hero',
-    'home': 'hero',
-    'hero': 'hero',
-    'sobre': 'sobre',
-    'projetos': 'projetos',
-    'habilidades': 'habilidades',
-    'contato': 'contato'
-  };
+  const ctx = canvas.getContext('2d');
+  let dpr = Math.min(window.devicePixelRatio || 1, 2);
+  let W = 0, H = 0;
+  const stars = [];
 
-  /**
-   * Ativa a página alvo e oculta as demais
-   * @param {string} rawTargetId - ID da página (ex: 'hero', 'sobre', 'projetos')
-   * @param {boolean} pushHistory - Se deve gravar no histórico do navegador
-   */
-  function navigateTo(rawTargetId, pushHistory = true) {
-    if (!rawTargetId) return;
+  const darkPalette = [
+    'rgba(255, 255, 255,',
+    'rgba(235, 243, 255,',
+    'rgba(215, 230, 255,',
+    'rgba(255, 245, 225,',
+    'rgba(197, 160, 89,',
+  ];
 
-    // Remove hash ou barras caso existam
-    const cleanId = rawTargetId.replace(/^#\/?/, '').toLowerCase();
-    const targetId = aliasMap[cleanId] || cleanId;
+  function resize() {
+    dpr = Math.min(window.devicePixelRatio || 1, 2);
+    W = window.innerWidth;
+    H = window.innerHeight;
+    canvas.width  = W * dpr;
+    canvas.height = H * dpr;
+    canvas.style.width  = W + 'px';
+    canvas.style.height = H + 'px';
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.scale(dpr, dpr);
+    buildStars();
+  }
 
-    const targetSection = document.getElementById(targetId);
-    if (!targetSection || !targetSection.classList.contains('page-view')) {
-      return;
+  function buildStars() {
+    stars.length = 0;
+    const count = Math.floor(Math.max(50, Math.min(140, (W * H) / 9000)));
+
+    for (let i = 0; i < count; i++) {
+      const yRand = Math.pow(Math.random(), 0.7);
+      stars.push({
+        x:         Math.random() * W,
+        y:         yRand * H,
+        r:         Math.random() * 1.1 + 0.35,
+        color:     darkPalette[Math.floor(Math.random() * darkPalette.length)],
+        baseAlpha: Math.random() * 0.4 + 0.15,
+        amp:       Math.random() * 0.16 + 0.04,
+        speed:     Math.random() * 0.8 + 0.3,
+        phase:     Math.random() * Math.PI * 2,
+        hasCross:  Math.random() > 0.9,
+      });
+    }
+  }
+
+  function drawFrame(now) {
+    const t = now * 0.001;
+    const isLight = document.documentElement.getAttribute('data-theme') === 'brand';
+
+    ctx.clearRect(0, 0, W, H);
+
+    // No tema claro, exibe partículas sutis com opacidade reduzida
+    // No tema escuro, renderiza as estrelas cintilantes
+    for (const s of stars) {
+      let alpha = Math.min(1, s.baseAlpha + Math.sin(t * s.speed + s.phase) * s.amp);
+
+      if (isLight) {
+        alpha = alpha * 0.25;
+        ctx.fillStyle = `rgba(15, 23, 42, ${alpha.toFixed(2)})`;
+      } else {
+        ctx.fillStyle = s.color + alpha.toFixed(2) + ')';
+      }
+
+      ctx.beginPath();
+      ctx.arc(s.x, s.y, isLight ? s.r * 0.8 : s.r, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Raios delicados para estrelas principais em tema escuro
+      if (!isLight && s.hasCross && s.r > 0.85 && alpha > 0.4) {
+        ctx.strokeStyle = s.color + (alpha * 0.3).toFixed(2) + ')';
+        ctx.lineWidth = 0.4;
+        ctx.beginPath();
+        ctx.moveTo(s.x - s.r * 2.5, s.y);
+        ctx.lineTo(s.x + s.r * 2.5, s.y);
+        ctx.moveTo(s.x, s.y - s.r * 2.5);
+        ctx.lineTo(s.x, s.y + s.r * 2.5);
+        ctx.stroke();
+      }
     }
 
-    // Oculta todas as páginas e exibe estritamente a página alvo
+    requestAnimationFrame(drawFrame);
+  }
+
+  resize();
+
+  let resizeTimer;
+  window.addEventListener('resize', () => {
+    clearTimeout(resizeTimer);
+    resizeTimer = setTimeout(resize, 150);
+  });
+
+  requestAnimationFrame(drawFrame);
+}
+
+/* ==========================================================================
+   1. PORTAL — ENTRADA NO PORTFÓLIO E RETORNO
+   ========================================================================== */
+function initNightSky() {
+  const portal    = document.getElementById('nightSkyPortal');
+  const enterBtn  = document.getElementById('revealedEnterBtn');
+  const returnBtn = document.getElementById('portalReturnBtn');
+  const footerBtn = document.getElementById('footerSkyBtn');
+
+  if (!portal) return;
+
+  function openPortfolio() {
+    document.body.classList.add('portal-opened');
+  }
+
+  function closePortfolio() {
+    document.body.classList.remove('portal-opened');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  if (enterBtn) {
+    enterBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      openPortfolio();
+    });
+  }
+
+  if (returnBtn) {
+    returnBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      closePortfolio();
+    });
+  }
+
+  if (footerBtn) {
+    footerBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      closePortfolio();
+    });
+  }
+
+  // Se a URL já tiver uma âncora/página específica, abre direto
+  const initialHash = window.location.hash.replace(/^#\/?/, '').toLowerCase().trim();
+  if (initialHash && ['hero', 'inicio', 'sobre', 'projetos', 'habilidades', 'contato'].includes(initialHash)) {
+    openPortfolio();
+  }
+}
+
+/* ==========================================================================
+   2. NAVEGAÇÃO ENTRE PÁGINAS INDEPENDENTES
+   ========================================================================== */
+function initNavigation() {
+  const pageViews    = Array.from(document.querySelectorAll('.page-view'));
+  const desktopLinks = Array.from(document.querySelectorAll('.nav-link'));
+  const mobileLinks  = Array.from(document.querySelectorAll('.mobile-nav-link'));
+  const footerLinks  = Array.from(document.querySelectorAll('.footer-links a[data-page]'));
+
+  const aliasMap = {
+    '':            'hero',
+    'inicio':      'hero',
+    'hero':        'hero',
+    'sobre':       'sobre',
+    'projetos':    'projetos',
+    'habilidades': 'habilidades',
+    'contato':     'contato',
+  };
+
+  function navigateTo(rawId, pushHistory = true) {
+    if (!rawId) return;
+    const cleanId  = rawId.replace(/^#\/?/, '').toLowerCase().trim();
+    const targetId = aliasMap[cleanId] || cleanId;
+    const target   = document.getElementById(targetId);
+
+    if (!target || !target.classList.contains('page-view')) return;
+
+    // Garante que o portfólio esteja aberto ao navegar
+    document.body.classList.add('portal-opened');
+
+    // Alterna página ativa
     pageViews.forEach(page => {
-      if (page.id === targetId) {
-        page.classList.add('is-active');
-        page.removeAttribute('aria-hidden');
-      } else {
-        page.classList.remove('is-active');
-        page.setAttribute('aria-hidden', 'true');
-      }
+      const active = page.id === targetId;
+      page.classList.toggle('is-active', active);
+      page.setAttribute('aria-hidden', String(!active));
     });
 
-    // Atualiza links desktop
-    desktopLinks.forEach(link => {
-      const pageAttr = link.getAttribute('data-page');
-      const href = link.getAttribute('href')?.replace(/^#/, '');
-      if (pageAttr === targetId || href === targetId) {
-        link.classList.add('active');
+    // Atualiza estados dos links
+    const allNavLinks = [...desktopLinks, ...mobileLinks, ...footerLinks];
+    allNavLinks.forEach(link => {
+      const lp = link.getAttribute('data-page');
+      const lh = (link.getAttribute('href') || '').replace(/^#/, '');
+      const isActive = lp === targetId || lh === targetId;
+      link.classList.toggle('active', isActive);
+      if (isActive) {
         link.setAttribute('aria-current', 'page');
       } else {
-        link.classList.remove('active');
         link.removeAttribute('aria-current');
       }
     });
 
-    // Atualiza links mobile
-    mobileLinks.forEach(link => {
-      const pageAttr = link.getAttribute('data-page');
-      const href = link.getAttribute('href')?.replace(/^#/, '');
-      if (pageAttr === targetId || href === targetId) {
-        link.classList.add('active');
-      } else {
-        link.classList.remove('active');
-      }
-    });
-
-    // Atualiza o histórico do navegador (suporte ao botão Voltar / Avançar)
+    // Histórico de navegação
     if (pushHistory) {
-      const newHash = targetId === 'hero' ? '#inicio' : `#${targetId}`;
-      if (window.location.hash !== newHash) {
-        history.pushState({ pageId: targetId }, '', newHash);
+      const hash = targetId === 'hero' ? '#inicio' : `#${targetId}`;
+      if (window.location.hash !== hash) {
+        history.pushState({ pageId: targetId }, '', hash);
       }
     }
 
-    // Rola para o topo da página selecionada de forma consistente
-    window.scrollTo({
-      top: 0,
-      behavior: 'smooth'
-    });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  // Captura cliques em qualquer elemento com data-page ou links com href="#..."
+  // Delegação de cliques para links internos e botões
   document.addEventListener('click', (e) => {
-    const navTrigger = e.target.closest('[data-page], a[href^="#"]');
-    if (!navTrigger) return;
+    const trigger = e.target.closest('[data-page], a[href^="#"]');
+    if (!trigger) return;
 
-    // Se for link externo ou sem destino, não intercepta
-    const dataPage = navTrigger.getAttribute('data-page');
-    const href = navTrigger.getAttribute('href');
+    // Se for o botão de retorno ao céu, deixa o handler específico cuidar
+    if (trigger.id === 'portalReturnBtn' || trigger.id === 'footerSkyBtn') return;
 
-    const destination = dataPage || (href && href.startsWith('#') ? href.replace(/^#/, '') : null);
+    const dp   = trigger.getAttribute('data-page');
+    const href = trigger.getAttribute('href');
+    const dest = dp || (href && href.startsWith('#') ? href.replace(/^#/, '') : null);
 
-    if (destination && aliasMap.hasOwnProperty(destination)) {
+    if (dest && Object.prototype.hasOwnProperty.call(aliasMap, dest.toLowerCase())) {
       e.preventDefault();
-      navigateTo(destination, true);
+      navigateTo(dest, true);
 
-      // Se o menu mobile estiver aberto, fecha-o
-      const mobileDrawer = document.getElementById('mobileNavDrawer');
-      const mobileBtn = document.getElementById('mobileMenuBtn');
-      if (mobileDrawer && mobileDrawer.classList.contains('is-open')) {
-        mobileDrawer.classList.remove('is-open');
-        if (mobileBtn) {
-          mobileBtn.classList.remove('is-active');
-          mobileBtn.setAttribute('aria-expanded', 'false');
+      // Fecha gaveta mobile se estiver aberta
+      const drawer = document.getElementById('mobileNavDrawer');
+      const btn    = document.getElementById('mobileMenuBtn');
+      if (drawer && drawer.classList.contains('is-open')) {
+        drawer.classList.remove('is-open');
+        if (btn) {
+          btn.classList.remove('is-active');
+          btn.setAttribute('aria-expanded', 'false');
         }
+        drawer.setAttribute('aria-hidden', 'true');
       }
     }
   });
 
-  // Trata eventos de navegação do navegador (botão Voltar / Avançar)
+  // Botões Avançar / Voltar do navegador
   window.addEventListener('popstate', (e) => {
-    const hash = window.location.hash.replace(/^#/, '');
-    const pageId = e.state?.pageId || hash || 'hero';
+    const hash   = window.location.hash.replace(/^#/, '');
+    const pageId = (e.state && e.state.pageId) || hash || 'hero';
     navigateTo(pageId, false);
   });
 
-  // Trata link direto ao carregar a página (ex: /#projetos ou /#contato)
-  const initialHash = window.location.hash.replace(/^#/, '');
-  if (initialHash && aliasMap.hasOwnProperty(initialHash.toLowerCase())) {
-    navigateTo(initialHash, false);
-  } else {
-    navigateTo('hero', false);
+  // Carregamento inicial com âncora
+  const initHash = window.location.hash.replace(/^#/, '').toLowerCase();
+  if (initHash && aliasMap[initHash]) {
+    navigateTo(initHash, false);
   }
 
-  // Expõe a função para depuração no console se necessário
   window.navigateToPage = navigateTo;
 }
 
 /* ==========================================================================
-   2. MENU MOBILE RESPONSIVO COM GAVETA
+   3. MENU MOBILE COM ACESSIBILIDADE
    ========================================================================== */
 function initMobileMenu() {
-  const toggleBtn = document.getElementById('mobileMenuBtn');
+  const btn    = document.getElementById('mobileMenuBtn');
   const drawer = document.getElementById('mobileNavDrawer');
-  if (!toggleBtn || !drawer) return;
+  if (!btn || !drawer) return;
 
-  function toggleMenu(forceOpen) {
-    const isOpen = typeof forceOpen === 'boolean'
+  function toggle(forceOpen) {
+    const open = typeof forceOpen === 'boolean'
       ? forceOpen
       : !drawer.classList.contains('is-open');
 
-    drawer.classList.toggle('is-open', isOpen);
-    toggleBtn.classList.toggle('is-active', isOpen);
-    toggleBtn.setAttribute('aria-expanded', String(isOpen));
-    drawer.setAttribute('aria-hidden', String(!isOpen));
+    drawer.classList.toggle('is-open', open);
+    btn.classList.toggle('is-active', open);
+    btn.setAttribute('aria-expanded', String(open));
+    drawer.setAttribute('aria-hidden', String(!open));
   }
 
-  toggleBtn.addEventListener('click', (e) => {
+  btn.addEventListener('click', (e) => {
     e.stopPropagation();
-    toggleMenu();
+    toggle();
   });
 
-  // Fecha ao clicar fora do menu
   document.addEventListener('click', (e) => {
-    if (drawer.classList.contains('is-open') && !drawer.contains(e.target) && !toggleBtn.contains(e.target)) {
-      toggleMenu(false);
+    if (
+      drawer.classList.contains('is-open') &&
+      !drawer.contains(e.target) &&
+      !btn.contains(e.target)
+    ) {
+      toggle(false);
     }
   });
 
-  // Fecha com tecla Escape
   document.addEventListener('keydown', (e) => {
     if (e.key === 'Escape' && drawer.classList.contains('is-open')) {
-      toggleMenu(false);
-      toggleBtn.focus();
+      toggle(false);
+      btn.focus();
     }
   });
 }
 
 /* ==========================================================================
-   3. RELÓGIO EM TEMPO REAL (HORÁRIO DE BRASÍLIA)
-   ========================================================================== */
-function initLiveClock() {
-  const clockEl = document.getElementById('liveClock');
-  if (!clockEl) return;
-
-  function updateClock() {
-    const now = new Date();
-    const hours = String(now.getHours()).padStart(2, '0');
-    const minutes = String(now.getMinutes()).padStart(2, '0');
-    const seconds = String(now.getSeconds()).padStart(2, '0');
-    clockEl.textContent = `${hours}:${minutes}:${seconds} BRT`;
-  }
-
-  updateClock();
-  setInterval(updateClock, 1000);
-}
-
-/* ==========================================================================
-   4. ALTERNADOR DE TEMA ESCURO / VIBRANTE
+   4. ALTERNADOR DE TEMA ESCURO / CLARO
    ========================================================================== */
 function initThemeToggle() {
-  const toggleBtn = document.getElementById('themeToggleBtn');
-  const themeLabel = document.getElementById('themeLabel');
-  const htmlRoot = document.documentElement;
+  const btn   = document.getElementById('themeToggleBtn');
+  const label = document.getElementById('themeLabel');
+  const root  = document.documentElement;
 
-  // Carrega tema salvo ou padrão escuro
   const savedTheme = localStorage.getItem('lbt-theme') || 'dark';
-  htmlRoot.setAttribute('data-theme', savedTheme);
-  if (themeLabel) {
-    themeLabel.textContent = savedTheme === 'dark' ? 'Modo Vibrante' : 'Modo Escuro';
+  root.setAttribute('data-theme', savedTheme);
+  if (label) {
+    label.textContent = savedTheme === 'dark' ? 'Modo Claro' : 'Modo Escuro';
   }
 
-  if (!toggleBtn) return;
+  if (!btn) return;
 
-  toggleBtn.addEventListener('click', () => {
-    const currentTheme = htmlRoot.getAttribute('data-theme');
-    const newTheme = currentTheme === 'dark' ? 'brand' : 'dark';
-
-    htmlRoot.setAttribute('data-theme', newTheme);
-    localStorage.setItem('lbt-theme', newTheme);
-
-    if (themeLabel) {
-      themeLabel.textContent = newTheme === 'dark' ? 'Modo Vibrante' : 'Modo Escuro';
+  btn.addEventListener('click', () => {
+    const current = root.getAttribute('data-theme');
+    const nextTheme = current === 'dark' ? 'brand' : 'dark';
+    root.setAttribute('data-theme', nextTheme);
+    localStorage.setItem('lbt-theme', nextTheme);
+    if (label) {
+      label.textContent = nextTheme === 'dark' ? 'Modo Claro' : 'Modo Escuro';
     }
   });
 }
 
 /* ==========================================================================
-   5. FORMULÁRIO DE CONTATO COM VALIDAÇÃO REAL E FALLBACK HONESTO
+   5. FORMULÁRIO DE CONTATO COM VALIDAÇÃO E FEEDBACK
    ========================================================================== */
 function initContactForm() {
-  const form = document.getElementById('contactForm');
+  const form    = document.getElementById('contactForm');
   if (!form) return;
 
-  const nameInput = document.getElementById('contactName');
-  const emailInput = document.getElementById('contactEmail');
-  const subjectInput = document.getElementById('contactSubject');
-  const messageInput = document.getElementById('contactMessage');
+  const nameEl    = document.getElementById('contactName');
+  const emailEl   = document.getElementById('contactEmail');
+  const subjectEl = document.getElementById('contactSubject');
+  const msgEl     = document.getElementById('contactMessage');
 
-  const nameError = document.getElementById('nameError');
-  const emailError = document.getElementById('emailError');
-  const subjectError = document.getElementById('subjectError');
-  const messageError = document.getElementById('messageError');
+  const nameErr    = document.getElementById('nameError');
+  const emailErr   = document.getElementById('emailError');
+  const subjectErr = document.getElementById('subjectError');
+  const msgErr     = document.getElementById('messageError');
 
+  const submitBtn   = document.getElementById('submitContactBtn');
+  const submitText  = document.getElementById('submitBtnText');
   const feedbackBox = document.getElementById('formFeedbackBox');
-  const copyBtn = document.getElementById('copyMessageBtn');
-  const directMailto = document.getElementById('directMailtoTrigger');
+  const copyBtn     = document.getElementById('copyMessageBtn');
+  const mailtoLink  = document.getElementById('directMailtoTrigger');
 
-  let lastGeneratedMessage = '';
-  let lastMailtoUrl = '';
+  let lastMessage = '';
+  let lastMailto  = '';
+
+  // Limpa estados de erro em tempo real ao digitar
+  [nameEl, emailEl, subjectEl, msgEl].forEach(input => {
+    if (!input) return;
+    input.addEventListener('input', () => {
+      input.classList.remove('is-invalid');
+      const errMap = {
+        contactName:    nameErr,
+        contactEmail:   emailErr,
+        contactSubject: subjectErr,
+        contactMessage: msgErr,
+      };
+      const targetErr = errMap[input.id];
+      if (targetErr) targetErr.textContent = '';
+    });
+  });
 
   function clearErrors() {
-    [nameError, emailError, subjectError, messageError].forEach(el => {
+    [nameErr, emailErr, subjectErr, msgErr].forEach(el => {
       if (el) el.textContent = '';
     });
-    [nameInput, emailInput, subjectInput, messageInput].forEach(input => {
-      if (input) input.classList.remove('is-invalid');
+    [nameEl, emailEl, subjectEl, msgEl].forEach(el => {
+      if (el) el.classList.remove('is-invalid');
     });
   }
 
-  function validateEmail(email) {
-    const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return re.test(String(email).toLowerCase());
+  function isValidEmail(v) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
   }
-
-  // Remove o erro assim que o usuário começa a digitar
-  [nameInput, emailInput, subjectInput, messageInput].forEach(input => {
-    if (input) {
-      input.addEventListener('input', () => {
-        input.classList.remove('is-invalid');
-        const errSpan = document.getElementById(input.name + 'Error') ||
-                        document.getElementById(input.id.replace('contact', '').toLowerCase() + 'Error');
-        if (errSpan) errSpan.textContent = '';
-      });
-    }
-  });
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     clearErrors();
 
-    const name = nameInput.value.trim();
-    const email = emailInput.value.trim();
-    const subject = subjectInput.value.trim();
-    const message = messageInput.value.trim();
+    const name    = (nameEl?.value   || '').trim();
+    const email   = (emailEl?.value  || '').trim();
+    const subject = (subjectEl?.value || '').trim();
+    const msg     = (msgEl?.value    || '').trim();
 
     let isValid = true;
+    let firstInvalidField = null;
 
     if (name.length < 2) {
-      nameError.textContent = 'Por favor, informe seu nome completo.';
-      nameInput.classList.add('is-invalid');
+      if (nameErr) nameErr.textContent = 'Por favor, informe seu nome completo ou como prefere ser chamado.';
+      if (nameEl) {
+        nameEl.classList.add('is-invalid');
+        if (!firstInvalidField) firstInvalidField = nameEl;
+      }
       isValid = false;
     }
 
-    if (!validateEmail(email)) {
-      emailError.textContent = 'Por favor, digite um e-mail válido (ex.: nome@dominio.com).';
-      emailInput.classList.add('is-invalid');
+    if (!isValidEmail(email)) {
+      if (emailErr) emailErr.textContent = 'Informe um endereço de e-mail válido (exemplo: seuemail@dominio.com).';
+      if (emailEl) {
+        emailEl.classList.add('is-invalid');
+        if (!firstInvalidField) firstInvalidField = emailEl;
+      }
       isValid = false;
     }
 
     if (subject.length < 3) {
-      subjectError.textContent = 'Informe o assunto da mensagem.';
-      subjectInput.classList.add('is-invalid');
+      if (subjectErr) subjectErr.textContent = 'Informe o assunto principal do seu contato.';
+      if (subjectEl) {
+        subjectEl.classList.add('is-invalid');
+        if (!firstInvalidField) firstInvalidField = subjectEl;
+      }
       isValid = false;
     }
 
-    if (message.length < 10) {
-      messageError.textContent = 'A mensagem deve conter pelo menos 10 caracteres.';
-      messageInput.classList.add('is-invalid');
+    if (msg.length < 10) {
+      if (msgErr) msgErr.textContent = 'Sua mensagem deve conter no mínimo 10 caracteres explicativos.';
+      if (msgEl) {
+        msgEl.classList.add('is-invalid');
+        if (!firstInvalidField) firstInvalidField = msgEl;
+      }
       isValid = false;
     }
 
-    if (!isValid) return;
+    if (!isValid) {
+      if (firstInvalidField) firstInvalidField.focus();
+      return;
+    }
 
-    lastGeneratedMessage = `Nome: ${name}\nE-mail: ${email}\nAssunto: ${subject}\n\nMensagem:\n${message}`;
+    // Prevenção de cliques duplicados durante submissão
+    if (submitBtn) submitBtn.disabled = true;
+    if (submitText) submitText.textContent = 'Abrindo E-mail...';
+
+    lastMessage = `Nome: ${name}\nE-mail: ${email}\nAssunto: ${subject}\n\nMensagem:\n${msg}`;
 
     const recipient = '37241@raphaeldisanto.com.br';
-    const emailSubject = `[Portfólio] ${subject}`;
-    const emailBody = `Olá, Laura!\n\n${message}\n\n---\nEnviado por: ${name} (${email})\nOrigem: Portfólio Laura Brilhante Torrano`;
+    const encodedSubject = encodeURIComponent(`[Contato Portfólio] ${subject}`);
+    const encodedBody = encodeURIComponent(
+      `Olá, Laura!\n\n${msg}\n\n---\nRemetente: ${name} (${email})\nOrigem: Portfólio de Laura Brilhante Torrano`
+    );
+    lastMailto = `mailto:${recipient}?subject=${encodedSubject}&body=${encodedBody}`;
 
-    lastMailtoUrl = `mailto:${recipient}?subject=${encodeURIComponent(emailSubject)}&body=${encodeURIComponent(emailBody)}`;
+    // Dispara acionamento do mailto
+    window.location.href = lastMailto;
 
-    // Tenta abrir o cliente padrão de e-mail do sistema
-    window.location.href = lastMailtoUrl;
-
-    // Exibe a caixa de feedback funcional
+    // Exibe painel de confirmação acessível
     if (feedbackBox) {
       feedbackBox.style.display = 'flex';
       feedbackBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
-
-    if (directMailto) {
-      directMailto.setAttribute('href', lastMailtoUrl);
+    if (mailtoLink) {
+      mailtoLink.setAttribute('href', lastMailto);
     }
+
+    setTimeout(() => {
+      if (submitBtn) submitBtn.disabled = false;
+      if (submitText) submitText.textContent = 'Preparar no E-mail';
+    }, 1800);
   });
 
-  // Copiar mensagem para área de transferência
   if (copyBtn) {
     copyBtn.addEventListener('click', () => {
-      if (!lastGeneratedMessage) return;
-
-      navigator.clipboard.writeText(lastGeneratedMessage).then(() => {
-        const span = copyBtn.querySelector('span');
-        const originalText = span.textContent;
-        span.textContent = '✓ Texto copiado!';
-        setTimeout(() => {
-          span.textContent = originalText;
-        }, 2500);
-      }).catch(() => {
-        alert('Não foi possível copiar automaticamente. Selecione e copie os dados manualmente.');
-      });
+      if (!lastMessage) return;
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(lastMessage).then(() => {
+          const originalText = copyBtn.textContent;
+          copyBtn.textContent = '✓ Texto copiado com sucesso!';
+          setTimeout(() => {
+            copyBtn.textContent = originalText;
+          }, 2500);
+        }).catch(() => {
+          fallbackCopyText(lastMessage, copyBtn);
+        });
+      } else {
+        fallbackCopyText(lastMessage, copyBtn);
+      }
     });
+  }
+
+  function fallbackCopyText(text, button) {
+    const tempInput = document.createElement('textarea');
+    tempInput.value = text;
+    tempInput.style.position = 'fixed';
+    tempInput.style.opacity = '0';
+    document.body.appendChild(tempInput);
+    tempInput.select();
+    try {
+      document.execCommand('copy');
+      const originalText = button.textContent;
+      button.textContent = '✓ Texto copiado com sucesso!';
+      setTimeout(() => {
+        button.textContent = originalText;
+      }, 2500);
+    } catch {
+      alert('Selecione e copie o texto manualmente.');
+    }
+    document.body.removeChild(tempInput);
   }
 }
 
 /* ==========================================================================
-   6. CURSOR PERSONALIZADO COM FÍSICA SUAVE (LERP)
+   6. CURSOR PERSONALIZADO (NÃO INVASIVO)
    ========================================================================== */
 function initCustomCursor() {
   const cursor = document.getElementById('customCursor');
-  const dot = document.getElementById('cursorDot');
-  const ring = document.getElementById('cursorRing');
+  const dot    = document.getElementById('cursorDot');
+  const ring   = document.getElementById('cursorRing');
 
   if (!cursor || !dot || !ring) return;
 
-  // Se o dispositivo for touch, não executa
-  if (window.matchMedia('(hover: none) and (pointer: coarse)').matches) {
+  // Desativa completamente em dispositivos touch
+  if (window.matchMedia('(hover: none) or (pointer: coarse)').matches) {
     cursor.style.display = 'none';
     return;
   }
 
-  let mouseX = -100;
-  let mouseY = -100;
-  let ringX = -100;
-  let ringY = -100;
+  let mx = -100, my = -100;
+  let rx = -100, ry = -100;
 
   window.addEventListener('mousemove', (e) => {
-    mouseX = e.clientX;
-    mouseY = e.clientY;
-    dot.style.transform = `translate(${mouseX}px, ${mouseY}px)`;
+    mx = e.clientX;
+    my = e.clientY;
+    dot.style.transform = `translate(${mx}px, ${my}px)`;
   });
 
-  function renderCursor() {
-    ringX += (mouseX - ringX) * 0.16;
-    ringY += (mouseY - ringY) * 0.16;
-    ring.style.transform = `translate(${ringX}px, ${ringY}px)`;
-    requestAnimationFrame(renderCursor);
+  function animateRing() {
+    rx += (mx - rx) * 0.16;
+    ry += (my - ry) * 0.16;
+    ring.style.transform = `translate(${rx}px, ${ry}px)`;
+    requestAnimationFrame(animateRing);
   }
-  requestAnimationFrame(renderCursor);
+  requestAnimationFrame(animateRing);
 
-  // Estados de hover em elementos interativos
+  // Estados ao passar o mouse sobre itens interativos
   document.addEventListener('mouseover', (e) => {
-    if (e.target.closest('a, button, input, textarea, .hero-word, .gothic-accent-tag, .project-card, .pillar-card')) {
+    if (e.target.closest('a, button, input, textarea, .btn-text-link, .project-entry-link, .mini-action')) {
       cursor.classList.add('is-hovering');
     }
   });
 
   document.addEventListener('mouseout', (e) => {
-    if (e.target.closest('a, button, input, textarea, .hero-word, .gothic-accent-tag, .project-card, .pillar-card')) {
+    if (e.target.closest('a, button, input, textarea, .btn-text-link, .project-entry-link, .mini-action')) {
       cursor.classList.remove('is-hovering');
     }
   });
 
   window.addEventListener('mousedown', () => cursor.classList.add('is-clicking'));
-  window.addEventListener('mouseup', () => cursor.classList.remove('is-clicking'));
+  window.addEventListener('mouseup',   () => cursor.classList.remove('is-clicking'));
 }

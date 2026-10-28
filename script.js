@@ -2,13 +2,13 @@
  * PORTFÓLIO — LAURA BRILHANTE TORRANO
  * JavaScript puro, sem frameworks.
  *
- * 0. Fundo: céu estrelado fixó em todas as telas
- * 1. Portal: entrada no portfólio e retorno ao céu
- * 2. Navegação entre páginas independentes
- * 3. Menu mobile responsivo
+ * 0. Fundo: Céu estrelado contínuo com respeito ao tema claro/escuro
+ * 1. Portal: Entrada no portfólio e retorno ao céu
+ * 2. Navegação entre páginas independentes e histórico de rotas
+ * 3. Menu mobile responsivo e acessível
  * 4. Alternador de tema escuro / claro
- * 5. Formulário de contato com validação + fallback mailto
- * 6. Cursor personalizado suave
+ * 5. Formulário de contato com validação e feedback acessível
+ * 6. Cursor personalizado não invasivo
  */
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -22,10 +22,9 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 /* ==========================================================================
-   0. CÉU ESTRELADO FIXO — FUNDO DE TODAS AS TELAS
-   Um canvas position:fixed com z-index 0 cobre toda a tela continuamente.
-   Estrelas distribuídas de forma natural, cintilando suavemente.
-   Não há grade, textura ou padrão repetitivo.
+   0. CÉU ESTRELADO FIXO — FUNDO CONTÍNUO
+   O canvas utiliza clearRect permitindo que a cor de fundo do tema
+   (escuro ou claro) seja exibida via CSS com total fidelidade.
    ========================================================================== */
 function initBgStars() {
   const canvas = document.getElementById('bgStarsCanvas');
@@ -36,13 +35,12 @@ function initBgStars() {
   let W = 0, H = 0;
   const stars = [];
 
-  // Paleta de estrelas: tons neutros fríos, sem cores sábicas
-  const palette = [
-    'rgba(255,255,255,',
-    'rgba(220,232,255,',
-    'rgba(210,230,255,',
-    'rgba(255,248,230,',
-    'rgba(200,220,255,',
+  const darkPalette = [
+    'rgba(255, 255, 255,',
+    'rgba(235, 243, 255,',
+    'rgba(215, 230, 255,',
+    'rgba(255, 245, 225,',
+    'rgba(197, 160, 89,',
   ];
 
   function resize() {
@@ -60,74 +58,64 @@ function initBgStars() {
 
   function buildStars() {
     stars.length = 0;
-    // Densidade modesta: ~1 estrela por 8000px² — não excessivo
-    const count = Math.floor(Math.max(60, Math.min(160, (W * H) / 8000)));
+    const count = Math.floor(Math.max(50, Math.min(140, (W * H) / 9000)));
 
     for (let i = 0; i < count; i++) {
-      // Distribuição não-uniforme: mais estrelas no terço superior (como um céu real)
-      const yRand = Math.pow(Math.random(), 0.7); // enviesado para o topo
+      const yRand = Math.pow(Math.random(), 0.7);
       stars.push({
         x:         Math.random() * W,
         y:         yRand * H,
-        r:         Math.random() * 1.2 + 0.35,           // 0.35 — 1.55 px
-        color:     palette[Math.floor(Math.random() * palette.length)],
-        baseAlpha: Math.random() * 0.45 + 0.18,          // base discreta
-        amp:       Math.random() * 0.18 + 0.04,          // amplitude do cintilar
-        speed:     Math.random() * 0.9 + 0.35,           // ritmo lento
+        r:         Math.random() * 1.1 + 0.35,
+        color:     darkPalette[Math.floor(Math.random() * darkPalette.length)],
+        baseAlpha: Math.random() * 0.4 + 0.15,
+        amp:       Math.random() * 0.16 + 0.04,
+        speed:     Math.random() * 0.8 + 0.3,
         phase:     Math.random() * Math.PI * 2,
-        hasCross:  Math.random() > 0.88,                 // ~12% com raios
+        hasCross:  Math.random() > 0.9,
       });
     }
   }
 
   function drawFrame(now) {
     const t = now * 0.001;
+    const isLight = document.documentElement.getAttribute('data-theme') === 'brand';
 
-    // Fundo azul-marinho sólido e profundo — sem gradientes chamativos
-    ctx.fillStyle = '#060D1C';
-    ctx.fillRect(0, 0, W, H);
+    ctx.clearRect(0, 0, W, H);
 
-    // Vignette suave nas bordas para dar profundidade sem artifícios
-    const vignette = ctx.createRadialGradient(
-      W / 2, H / 2, H * 0.25,
-      W / 2, H / 2, H * 0.85
-    );
-    vignette.addColorStop(0, 'rgba(0,0,0,0)');
-    vignette.addColorStop(1, 'rgba(0,4,14,0.55)');
-    ctx.fillStyle = vignette;
-    ctx.fillRect(0, 0, W, H);
-
-    // Estrelas
+    // No tema claro, exibe partículas sutis com opacidade reduzida
+    // No tema escuro, renderiza as estrelas cintilantes
     for (const s of stars) {
-      const alpha = Math.min(1,
-        s.baseAlpha + Math.sin(t * s.speed + s.phase) * s.amp
-      );
+      let alpha = Math.min(1, s.baseAlpha + Math.sin(t * s.speed + s.phase) * s.amp);
 
-      ctx.globalAlpha = Math.max(0.05, alpha);
-      ctx.fillStyle   = s.color + alpha.toFixed(2) + ')';
+      if (isLight) {
+        alpha = alpha * 0.25;
+        ctx.fillStyle = `rgba(15, 23, 42, ${alpha.toFixed(2)})`;
+      } else {
+        ctx.fillStyle = s.color + alpha.toFixed(2) + ')';
+      }
+
       ctx.beginPath();
-      ctx.arc(s.x, s.y, s.r, 0, Math.PI * 2);
+      ctx.arc(s.x, s.y, isLight ? s.r * 0.8 : s.r, 0, Math.PI * 2);
       ctx.fill();
 
-      // Raios sutis em estrelas maiores
-      if (s.hasCross && s.r > 0.8 && alpha > 0.45) {
-        ctx.strokeStyle = s.color + (alpha * 0.35).toFixed(2) + ')';
-        ctx.lineWidth   = 0.4;
+      // Raios delicados para estrelas principais em tema escuro
+      if (!isLight && s.hasCross && s.r > 0.85 && alpha > 0.4) {
+        ctx.strokeStyle = s.color + (alpha * 0.3).toFixed(2) + ')';
+        ctx.lineWidth = 0.4;
         ctx.beginPath();
-        ctx.moveTo(s.x - s.r * 2.8, s.y);
-        ctx.lineTo(s.x + s.r * 2.8, s.y);
-        ctx.moveTo(s.x, s.y - s.r * 2.8);
-        ctx.lineTo(s.x, s.y + s.r * 2.8);
+        ctx.moveTo(s.x - s.r * 2.5, s.y);
+        ctx.lineTo(s.x + s.r * 2.5, s.y);
+        ctx.moveTo(s.x, s.y - s.r * 2.5);
+        ctx.lineTo(s.x, s.y + s.r * 2.5);
         ctx.stroke();
       }
     }
 
-    ctx.globalAlpha = 1;
     requestAnimationFrame(drawFrame);
   }
 
   resize();
-  // Redimensiona com debounce leve para evitar trabalho excessivo
+
   let resizeTimer;
   window.addEventListener('resize', () => {
     clearTimeout(resizeTimer);
@@ -137,9 +125,8 @@ function initBgStars() {
   requestAnimationFrame(drawFrame);
 }
 
-
 /* ==========================================================================
-   1. PORTAL — ENTRADA NO PORTFÓLIO
+   1. PORTAL — ENTRADA NO PORTFÓLIO E RETORNO
    ========================================================================== */
 function initNightSky() {
   const portal    = document.getElementById('nightSkyPortal');
@@ -149,28 +136,45 @@ function initNightSky() {
 
   if (!portal) return;
 
-  // O nightSkyCanvas interno é transparente (bgStarsCanvas já cobre o fundo)
-  const portalCanvas = document.getElementById('nightSkyCanvas');
-  if (portalCanvas) {
-    portalCanvas.style.display = 'none'; // canvas do portal não precisa mais de estrelas
-  }
-
   function openPortfolio() {
     document.body.classList.add('portal-opened');
   }
 
   function closePortfolio() {
     document.body.classList.remove('portal-opened');
-    window.scrollTo({ top: 0 });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  if (enterBtn)  enterBtn.addEventListener('click',  (e) => { e.preventDefault(); openPortfolio(); });
-  if (returnBtn) returnBtn.addEventListener('click', (e) => { e.preventDefault(); closePortfolio(); });
-  if (footerBtn) footerBtn.addEventListener('click', (e) => { e.preventDefault(); closePortfolio(); });
+  if (enterBtn) {
+    enterBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      openPortfolio();
+    });
+  }
+
+  if (returnBtn) {
+    returnBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      closePortfolio();
+    });
+  }
+
+  if (footerBtn) {
+    footerBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      closePortfolio();
+    });
+  }
+
+  // Se a URL já tiver uma âncora/página específica, abre direto
+  const initialHash = window.location.hash.replace(/^#\/?/, '').toLowerCase().trim();
+  if (initialHash && ['hero', 'inicio', 'sobre', 'projetos', 'habilidades', 'contato'].includes(initialHash)) {
+    openPortfolio();
+  }
 }
 
 /* ==========================================================================
-   2. NAVEGAÇÃO ENTRE PÁGINAS
+   2. NAVEGAÇÃO ENTRE PÁGINAS INDEPENDENTES
    ========================================================================== */
 function initNavigation() {
   const pageViews    = Array.from(document.querySelectorAll('.page-view'));
@@ -196,25 +200,31 @@ function initNavigation() {
 
     if (!target || !target.classList.contains('page-view')) return;
 
-    // Ativa/desativa páginas
+    // Garante que o portfólio esteja aberto ao navegar
+    document.body.classList.add('portal-opened');
+
+    // Alterna página ativa
     pageViews.forEach(page => {
       const active = page.id === targetId;
       page.classList.toggle('is-active', active);
       page.setAttribute('aria-hidden', String(!active));
     });
 
-    // Atualiza links de navegação
+    // Atualiza estados dos links
     const allNavLinks = [...desktopLinks, ...mobileLinks, ...footerLinks];
     allNavLinks.forEach(link => {
-      const lp   = link.getAttribute('data-page');
-      const lh   = (link.getAttribute('href') || '').replace(/^#/, '');
+      const lp = link.getAttribute('data-page');
+      const lh = (link.getAttribute('href') || '').replace(/^#/, '');
       const isActive = lp === targetId || lh === targetId;
       link.classList.toggle('active', isActive);
-      if (isActive) link.setAttribute('aria-current', 'page');
-      else          link.removeAttribute('aria-current');
+      if (isActive) {
+        link.setAttribute('aria-current', 'page');
+      } else {
+        link.removeAttribute('aria-current');
+      }
     });
 
-    // Histórico
+    // Histórico de navegação
     if (pushHistory) {
       const hash = targetId === 'hero' ? '#inicio' : `#${targetId}`;
       if (window.location.hash !== hash) {
@@ -222,15 +232,18 @@ function initNavigation() {
       }
     }
 
-    window.scrollTo({ top: 0 });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   }
 
-  // Delegação de cliques
+  // Delegação de cliques para links internos e botões
   document.addEventListener('click', (e) => {
     const trigger = e.target.closest('[data-page], a[href^="#"]');
     if (!trigger) return;
 
-    const dp  = trigger.getAttribute('data-page');
+    // Se for o botão de retorno ao céu, deixa o handler específico cuidar
+    if (trigger.id === 'portalReturnBtn' || trigger.id === 'footerSkyBtn') return;
+
+    const dp   = trigger.getAttribute('data-page');
     const href = trigger.getAttribute('href');
     const dest = dp || (href && href.startsWith('#') ? href.replace(/^#/, '') : null);
 
@@ -238,7 +251,7 @@ function initNavigation() {
       e.preventDefault();
       navigateTo(dest, true);
 
-      // Fecha menu mobile se aberto
+      // Fecha gaveta mobile se estiver aberta
       const drawer = document.getElementById('mobileNavDrawer');
       const btn    = document.getElementById('mobileMenuBtn');
       if (drawer && drawer.classList.contains('is-open')) {
@@ -252,23 +265,24 @@ function initNavigation() {
     }
   });
 
-  // Botão Voltar / Avançar do browser
+  // Botões Avançar / Voltar do navegador
   window.addEventListener('popstate', (e) => {
     const hash   = window.location.hash.replace(/^#/, '');
     const pageId = (e.state && e.state.pageId) || hash || 'hero';
     navigateTo(pageId, false);
   });
 
-  // Hash na URL ao carregar
+  // Carregamento inicial com âncora
   const initHash = window.location.hash.replace(/^#/, '').toLowerCase();
-  navigateTo(initHash || 'hero', false);
+  if (initHash && aliasMap[initHash]) {
+    navigateTo(initHash, false);
+  }
 
-  // Expõe globalmente para debug
   window.navigateToPage = navigateTo;
 }
 
 /* ==========================================================================
-   3. MENU MOBILE
+   3. MENU MOBILE COM ACESSIBILIDADE
    ========================================================================== */
 function initMobileMenu() {
   const btn    = document.getElementById('mobileMenuBtn');
@@ -286,14 +300,19 @@ function initMobileMenu() {
     drawer.setAttribute('aria-hidden', String(!open));
   }
 
-  btn.addEventListener('click', (e) => { e.stopPropagation(); toggle(); });
+  btn.addEventListener('click', (e) => {
+    e.stopPropagation();
+    toggle();
+  });
 
   document.addEventListener('click', (e) => {
     if (
       drawer.classList.contains('is-open') &&
       !drawer.contains(e.target) &&
       !btn.contains(e.target)
-    ) toggle(false);
+    ) {
+      toggle(false);
+    }
   });
 
   document.addEventListener('keydown', (e) => {
@@ -305,30 +324,34 @@ function initMobileMenu() {
 }
 
 /* ==========================================================================
-   4. ALTERNADOR DE TEMA
+   4. ALTERNADOR DE TEMA ESCURO / CLARO
    ========================================================================== */
 function initThemeToggle() {
   const btn   = document.getElementById('themeToggleBtn');
   const label = document.getElementById('themeLabel');
   const root  = document.documentElement;
 
-  const saved = localStorage.getItem('lbt-theme') || 'dark';
-  root.setAttribute('data-theme', saved);
-  if (label) label.textContent = saved === 'dark' ? 'Modo Claro' : 'Modo Escuro';
+  const savedTheme = localStorage.getItem('lbt-theme') || 'dark';
+  root.setAttribute('data-theme', savedTheme);
+  if (label) {
+    label.textContent = savedTheme === 'dark' ? 'Modo Claro' : 'Modo Escuro';
+  }
 
   if (!btn) return;
 
   btn.addEventListener('click', () => {
-    const cur  = root.getAttribute('data-theme');
-    const next = cur === 'dark' ? 'brand' : 'dark';
-    root.setAttribute('data-theme', next);
-    localStorage.setItem('lbt-theme', next);
-    if (label) label.textContent = next === 'dark' ? 'Modo Claro' : 'Modo Escuro';
+    const current = root.getAttribute('data-theme');
+    const nextTheme = current === 'dark' ? 'brand' : 'dark';
+    root.setAttribute('data-theme', nextTheme);
+    localStorage.setItem('lbt-theme', nextTheme);
+    if (label) {
+      label.textContent = nextTheme === 'dark' ? 'Modo Claro' : 'Modo Escuro';
+    }
   });
 }
 
 /* ==========================================================================
-   5. FORMULÁRIO DE CONTATO
+   5. FORMULÁRIO DE CONTATO COM VALIDAÇÃO E FEEDBACK
    ========================================================================== */
 function initContactForm() {
   const form    = document.getElementById('contactForm');
@@ -344,35 +367,41 @@ function initContactForm() {
   const subjectErr = document.getElementById('subjectError');
   const msgErr     = document.getElementById('messageError');
 
-  const feedbackBox  = document.getElementById('formFeedbackBox');
-  const copyBtn      = document.getElementById('copyMessageBtn');
-  const mailtoTrigger = document.getElementById('directMailtoTrigger');
+  const submitBtn   = document.getElementById('submitContactBtn');
+  const submitText  = document.getElementById('submitBtnText');
+  const feedbackBox = document.getElementById('formFeedbackBox');
+  const copyBtn     = document.getElementById('copyMessageBtn');
+  const mailtoLink  = document.getElementById('directMailtoTrigger');
 
   let lastMessage = '';
   let lastMailto  = '';
 
-  // Limpa erros ao digitar
+  // Limpa estados de erro em tempo real ao digitar
   [nameEl, emailEl, subjectEl, msgEl].forEach(input => {
     if (!input) return;
     input.addEventListener('input', () => {
       input.classList.remove('is-invalid');
-      const errId = {
-        contactName:    'nameError',
-        contactEmail:   'emailError',
-        contactSubject: 'subjectError',
-        contactMessage: 'messageError',
-      }[input.id];
-      const errEl = document.getElementById(errId);
-      if (errEl) errEl.textContent = '';
+      const errMap = {
+        contactName:    nameErr,
+        contactEmail:   emailErr,
+        contactSubject: subjectErr,
+        contactMessage: msgErr,
+      };
+      const targetErr = errMap[input.id];
+      if (targetErr) targetErr.textContent = '';
     });
   });
 
   function clearErrors() {
-    [nameErr, emailErr, subjectErr, msgErr].forEach(el => { if (el) el.textContent = ''; });
-    [nameEl, emailEl, subjectEl, msgEl].forEach(el => { if (el) el.classList.remove('is-invalid'); });
+    [nameErr, emailErr, subjectErr, msgErr].forEach(el => {
+      if (el) el.textContent = '';
+    });
+    [nameEl, emailEl, subjectEl, msgEl].forEach(el => {
+      if (el) el.classList.remove('is-invalid');
+    });
   }
 
-  function validEmail(v) {
+  function isValidEmail(v) {
     return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v);
   }
 
@@ -384,65 +413,124 @@ function initContactForm() {
     const email   = (emailEl?.value  || '').trim();
     const subject = (subjectEl?.value || '').trim();
     const msg     = (msgEl?.value    || '').trim();
-    let ok = true;
+
+    let isValid = true;
+    let firstInvalidField = null;
 
     if (name.length < 2) {
-      if (nameErr) nameErr.textContent = 'Por favor, informe seu nome.';
-      if (nameEl)  nameEl.classList.add('is-invalid');
-      ok = false;
-    }
-    if (!validEmail(email)) {
-      if (emailErr) emailErr.textContent = 'Digite um e-mail válido.';
-      if (emailEl)  emailEl.classList.add('is-invalid');
-      ok = false;
-    }
-    if (subject.length < 3) {
-      if (subjectErr) subjectErr.textContent = 'Informe o assunto.';
-      if (subjectEl)  subjectEl.classList.add('is-invalid');
-      ok = false;
-    }
-    if (msg.length < 10) {
-      if (msgErr) msgErr.textContent = 'A mensagem deve ter pelo menos 10 caracteres.';
-      if (msgEl)  msgEl.classList.add('is-invalid');
-      ok = false;
+      if (nameErr) nameErr.textContent = 'Por favor, informe seu nome completo ou como prefere ser chamado.';
+      if (nameEl) {
+        nameEl.classList.add('is-invalid');
+        if (!firstInvalidField) firstInvalidField = nameEl;
+      }
+      isValid = false;
     }
 
-    if (!ok) return;
+    if (!isValidEmail(email)) {
+      if (emailErr) emailErr.textContent = 'Informe um endereço de e-mail válido (exemplo: seuemail@dominio.com).';
+      if (emailEl) {
+        emailEl.classList.add('is-invalid');
+        if (!firstInvalidField) firstInvalidField = emailEl;
+      }
+      isValid = false;
+    }
+
+    if (subject.length < 3) {
+      if (subjectErr) subjectErr.textContent = 'Informe o assunto principal do seu contato.';
+      if (subjectEl) {
+        subjectEl.classList.add('is-invalid');
+        if (!firstInvalidField) firstInvalidField = subjectEl;
+      }
+      isValid = false;
+    }
+
+    if (msg.length < 10) {
+      if (msgErr) msgErr.textContent = 'Sua mensagem deve conter no mínimo 10 caracteres explicativos.';
+      if (msgEl) {
+        msgEl.classList.add('is-invalid');
+        if (!firstInvalidField) firstInvalidField = msgEl;
+      }
+      isValid = false;
+    }
+
+    if (!isValid) {
+      if (firstInvalidField) firstInvalidField.focus();
+      return;
+    }
+
+    // Prevenção de cliques duplicados durante submissão
+    if (submitBtn) submitBtn.disabled = true;
+    if (submitText) submitText.textContent = 'Abrindo E-mail...';
 
     lastMessage = `Nome: ${name}\nE-mail: ${email}\nAssunto: ${subject}\n\nMensagem:\n${msg}`;
 
     const recipient = '37241@raphaeldisanto.com.br';
-    const subjectEncoded = encodeURIComponent(`[Portfólio] ${subject}`);
-    const bodyEncoded    = encodeURIComponent(
-      `Olá, Laura!\n\n${msg}\n\n---\nEnviado por: ${name} (${email})\nOrigem: Portfólio Laura Brilhante Torrano`
+    const encodedSubject = encodeURIComponent(`[Contato Portfólio] ${subject}`);
+    const encodedBody = encodeURIComponent(
+      `Olá, Laura!\n\n${msg}\n\n---\nRemetente: ${name} (${email})\nOrigem: Portfólio de Laura Brilhante Torrano`
     );
-    lastMailto = `mailto:${recipient}?subject=${subjectEncoded}&body=${bodyEncoded}`;
+    lastMailto = `mailto:${recipient}?subject=${encodedSubject}&body=${encodedBody}`;
 
+    // Dispara acionamento do mailto
     window.location.href = lastMailto;
 
+    // Exibe painel de confirmação acessível
     if (feedbackBox) {
       feedbackBox.style.display = 'flex';
       feedbackBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     }
-    if (mailtoTrigger) mailtoTrigger.setAttribute('href', lastMailto);
+    if (mailtoLink) {
+      mailtoLink.setAttribute('href', lastMailto);
+    }
+
+    setTimeout(() => {
+      if (submitBtn) submitBtn.disabled = false;
+      if (submitText) submitText.textContent = 'Preparar no E-mail';
+    }, 1800);
   });
 
   if (copyBtn) {
     copyBtn.addEventListener('click', () => {
       if (!lastMessage) return;
-      navigator.clipboard.writeText(lastMessage).then(() => {
-        const orig = copyBtn.textContent;
-        copyBtn.textContent = '✓ Copiado!';
-        setTimeout(() => { copyBtn.textContent = orig; }, 2500);
-      }).catch(() => {
-        alert('Não foi possível copiar. Selecione e copie manualmente.');
-      });
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(lastMessage).then(() => {
+          const originalText = copyBtn.textContent;
+          copyBtn.textContent = '✓ Texto copiado com sucesso!';
+          setTimeout(() => {
+            copyBtn.textContent = originalText;
+          }, 2500);
+        }).catch(() => {
+          fallbackCopyText(lastMessage, copyBtn);
+        });
+      } else {
+        fallbackCopyText(lastMessage, copyBtn);
+      }
     });
+  }
+
+  function fallbackCopyText(text, button) {
+    const tempInput = document.createElement('textarea');
+    tempInput.value = text;
+    tempInput.style.position = 'fixed';
+    tempInput.style.opacity = '0';
+    document.body.appendChild(tempInput);
+    tempInput.select();
+    try {
+      document.execCommand('copy');
+      const originalText = button.textContent;
+      button.textContent = '✓ Texto copiado com sucesso!';
+      setTimeout(() => {
+        button.textContent = originalText;
+      }, 2500);
+    } catch {
+      alert('Selecione e copie o texto manualmente.');
+    }
+    document.body.removeChild(tempInput);
   }
 }
 
 /* ==========================================================================
-   6. CURSOR PERSONALIZADO
+   6. CURSOR PERSONALIZADO (NÃO INVASIVO)
    ========================================================================== */
 function initCustomCursor() {
   const cursor = document.getElementById('customCursor');
@@ -451,8 +539,8 @@ function initCustomCursor() {
 
   if (!cursor || !dot || !ring) return;
 
-  // Desativa em dispositivos touch
-  if (window.matchMedia('(hover: none) and (pointer: coarse)').matches) {
+  // Desativa completamente em dispositivos touch
+  if (window.matchMedia('(hover: none) or (pointer: coarse)').matches) {
     cursor.style.display = 'none';
     return;
   }
@@ -467,21 +555,22 @@ function initCustomCursor() {
   });
 
   function animateRing() {
-    rx += (mx - rx) * 0.15;
-    ry += (my - ry) * 0.15;
+    rx += (mx - rx) * 0.16;
+    ry += (my - ry) * 0.16;
     ring.style.transform = `translate(${rx}px, ${ry}px)`;
     requestAnimationFrame(animateRing);
   }
   requestAnimationFrame(animateRing);
 
+  // Estados ao passar o mouse sobre itens interativos
   document.addEventListener('mouseover', (e) => {
-    if (e.target.closest('a, button, input, textarea, .project-entry, .btn-text-link')) {
+    if (e.target.closest('a, button, input, textarea, .btn-text-link, .project-entry-link, .mini-action')) {
       cursor.classList.add('is-hovering');
     }
   });
 
   document.addEventListener('mouseout', (e) => {
-    if (e.target.closest('a, button, input, textarea, .project-entry, .btn-text-link')) {
+    if (e.target.closest('a, button, input, textarea, .btn-text-link, .project-entry-link, .mini-action')) {
       cursor.classList.remove('is-hovering');
     }
   });

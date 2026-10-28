@@ -11,6 +11,7 @@
  */
 
 document.addEventListener('DOMContentLoaded', () => {
+  initIntroPortal();
   initNavigation();
   initMobileMenu();
   initLiveClock();
@@ -18,6 +19,78 @@ document.addEventListener('DOMContentLoaded', () => {
   initContactForm();
   initCustomCursor();
 });
+
+/* ==========================================================================
+   0. TELA INICIAL: PORTAL INTIMISTA COM ESTRELA INTERATIVA
+   Regra principal: Nenhuma outra área é visível até o clique na estrela.
+   Ao abrir o projeto, apenas o nome e a estrela são apresentados.
+   ========================================================================== */
+function initIntroPortal() {
+  const introPortal = document.getElementById('introPortal');
+  const starBtn = document.getElementById('introStarBtn');
+  const returnBtn = document.getElementById('portalReturnBtn');
+
+  if (!introPortal || !starBtn) return;
+
+  // Garante que o estado inicial é fechado (tela da estrela visível)
+  document.body.classList.remove('portal-opened');
+  introPortal.style.display = 'flex';
+  introPortal.removeAttribute('aria-hidden');
+
+  let isOpening = false;
+
+  function openPortal() {
+    if (isOpening) return;
+    isOpening = true;
+
+    // Feedback visual tátil na estrela
+    starBtn.classList.add('is-activating');
+
+    // Revela suavemente o projeto após breve pulso estelar
+    setTimeout(() => {
+      document.body.classList.add('portal-opened');
+    }, 280);
+
+    // Conclui a transição e desativa a tela inicial para acessibilidade
+    setTimeout(() => {
+      introPortal.setAttribute('aria-hidden', 'true');
+      introPortal.style.display = 'none';
+      starBtn.classList.remove('is-activating');
+      isOpening = false;
+    }, 950);
+  }
+
+  function closePortal() {
+    introPortal.style.display = 'flex';
+    // Força reflow para animação reversa suave
+    void introPortal.offsetHeight;
+    introPortal.removeAttribute('aria-hidden');
+    document.body.classList.remove('portal-opened');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+
+  // Interação ao clicar ou tocar na estrela
+  starBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    openPortal();
+  });
+
+  // Suporte a teclado acessível (Enter ou Espaço)
+  starBtn.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' || e.key === ' ') {
+      e.preventDefault();
+      openPortal();
+    }
+  });
+
+  // Botão no menu superior para revisitar a tela da estrela
+  if (returnBtn) {
+    returnBtn.addEventListener('click', (e) => {
+      e.preventDefault();
+      closePortal();
+    });
+  }
+}
 
 /* ==========================================================================
    1. CONTROLADOR DE NAVEGAÇÃO ENTRE PÁGINAS INDEPENDENTES

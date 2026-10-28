@@ -27,6 +27,7 @@
   --color-error: #FF4D70;
 
   /* Tipografia */
+  --font-serif: 'Cormorant Garamond', 'Syne', Georgia, serif;
   --font-display: 'Syne', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-gothic: 'UnifrakturMaguntia', cursive;
   --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -192,6 +193,258 @@ textarea:focus-visible {
   height: 26px;
 }
 
+/* ==========================================================================
+   4.1 TELA INICIAL EXCLUSIVA: PORTAL INTIMISTA E AUTÊNTICO
+   Mostra unicamente o nome LAURA BRILHANTE TORRANO e a estrela interativa.
+   Nenhuma outra área é visível até o clique/toque na estrela.
+   ========================================================================== */
+.intro-portal {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  z-index: 99990;
+  background-color: #0c0510;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2.5rem 1.75rem;
+  overflow: hidden;
+  transition: opacity 0.85s cubic-bezier(0.22, 1, 0.36, 1),
+              visibility 0.85s cubic-bezier(0.22, 1, 0.36, 1),
+              transform 0.85s cubic-bezier(0.22, 1, 0.36, 1);
+  will-change: opacity, transform;
+}
+
+[data-theme="brand"] .intro-portal {
+  background-color: #FAF4F7;
+}
+
+/* Fundo suave com iluminação discreta e orgânica */
+.intro-backdrop-light {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background: radial-gradient(circle at 50% 50%, rgba(255, 99, 248, 0.08) 0%, rgba(255, 107, 140, 0.04) 38%, transparent 72%);
+  transition: opacity 0.4s ease;
+}
+
+[data-theme="brand"] .intro-backdrop-light {
+  background: radial-gradient(circle at 50% 50%, rgba(216, 27, 133, 0.07) 0%, rgba(255, 107, 140, 0.04) 40%, transparent 75%);
+}
+
+.intro-star-dust {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  opacity: 0.22;
+  background-image: radial-gradient(rgba(255, 224, 232, 0.16) 1px, transparent 1px);
+  background-size: 52px 52px;
+  mask-image: radial-gradient(circle at 50% 50%, black 35%, transparent 80%);
+  -webkit-mask-image: radial-gradient(circle at 50% 50%, black 35%, transparent 80%);
+}
+
+/* Palco Centralizado com Proporções Áureas */
+.intro-center-stage {
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  max-width: 1040px;
+  margin: 0 auto;
+  gap: clamp(2.4rem, 6vh, 4.2rem);
+}
+
+/* Nome com tipografia sofisticada, delicada, humana e natural */
+.intro-name-display {
+  font-family: var(--font-serif);
+  font-weight: 300;
+  font-size: clamp(2.1rem, 5.8vw, 4.6rem);
+  line-height: 1.14;
+  letter-spacing: clamp(0.14em, 0.38vw, 0.28em);
+  text-transform: uppercase;
+  color: var(--color-highlight);
+  margin: 0;
+  user-select: none;
+  transition: color 0.4s ease, text-shadow 0.4s ease;
+  text-shadow: 0 4px 35px rgba(255, 99, 248, 0.2);
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.3em 0.5em;
+}
+
+[data-theme="brand"] .intro-name-display {
+  color: #1E071D;
+  text-shadow: 0 4px 35px rgba(216, 27, 133, 0.14);
+}
+
+.name-part {
+  display: inline-block;
+  white-space: nowrap;
+}
+
+/* O elemento interativo único: Estrela Delicada */
+.intro-star-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.15rem;
+}
+
+.intro-star-trigger {
+  background: transparent;
+  border: none;
+  padding: 20px;
+  cursor: pointer;
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  outline: none;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* SVG da Estrela Delicada */
+.star-svg-delicate {
+  width: clamp(52px, 7vw, 68px);
+  height: clamp(52px, 7vw, 68px);
+  color: var(--color-primary);
+  filter: drop-shadow(0 0 16px rgba(255, 99, 248, 0.38));
+  animation: starGentleBreathe 4.5s ease-in-out infinite;
+  transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1),
+              filter 0.5s ease,
+              opacity 0.4s ease;
+}
+
+[data-theme="brand"] .star-svg-delicate {
+  filter: drop-shadow(0 0 16px rgba(216, 27, 133, 0.32));
+}
+
+/* Pulso lento, discreto e natural da estrela */
+@keyframes starGentleBreathe {
+  0%, 100% {
+    transform: scale(1);
+    filter: drop-shadow(0 0 14px rgba(255, 99, 248, 0.32));
+  }
+  50% {
+    transform: scale(1.07);
+    filter: drop-shadow(0 0 26px rgba(255, 99, 248, 0.65));
+  }
+}
+
+/* Interação com a Estrela ao passar o mouse ou focar */
+.intro-star-trigger:hover .star-svg-delicate,
+.intro-star-trigger:focus-visible .star-svg-delicate {
+  animation: none;
+  transform: scale(1.18) rotate(45deg);
+  filter: drop-shadow(0 0 32px var(--color-primary));
+}
+
+.intro-star-trigger:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 8px;
+}
+
+/* Micro-anel de pulsação suave */
+.star-pulse-ring {
+  position: absolute;
+  inset: 6px;
+  border-radius: 50%;
+  border: 1px solid rgba(255, 224, 232, 0.22);
+  pointer-events: none;
+  animation: ringPulse 4.5s ease-in-out infinite;
+  opacity: 0.5;
+  transition: transform 0.6s ease-out, opacity 0.6s ease-out;
+}
+
+@keyframes ringPulse {
+  0%, 100% {
+    transform: scale(0.92);
+    opacity: 0.2;
+  }
+  50% {
+    transform: scale(1.22);
+    opacity: 0.55;
+  }
+}
+
+/* Efeito no clique: a estrela se abre revelando o projeto */
+.intro-star-trigger.is-activating .star-svg-delicate {
+  transform: scale(1.4) rotate(90deg);
+  filter: drop-shadow(0 0 45px var(--color-primary));
+  opacity: 0.95;
+  transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1), filter 0.45s ease;
+}
+
+.intro-star-trigger.is-activating .star-pulse-ring {
+  transform: scale(2.2);
+  opacity: 0;
+}
+
+/* Micro-legenda discreta e refinada */
+.intro-star-hint {
+  font-family: var(--font-tech);
+  font-size: 0.72rem;
+  letter-spacing: 0.28em;
+  text-transform: uppercase;
+  color: var(--color-text-muted);
+  opacity: 0.45;
+  transition: opacity 0.35s ease, transform 0.35s ease, color 0.35s ease;
+  pointer-events: none;
+  user-select: none;
+}
+
+.intro-star-wrapper:hover .intro-star-hint,
+.intro-star-trigger:focus-visible ~ .intro-star-hint {
+  opacity: 0.95;
+  color: var(--color-highlight);
+  transform: translateY(-2px);
+}
+
+/* ==========================================================================
+   ESTADO INICIAL: REVELAÇÃO DO PROJETO
+   Regra principal: Nenhuma outra seção, menu ou funcionalidade deve aparecer
+   antes de clicar na estrela.
+   ========================================================================== */
+body:not(.portal-opened) {
+  overflow: hidden !important;
+  height: 100vh;
+}
+
+body:not(.portal-opened) .site-header,
+body:not(.portal-opened) #mainContent,
+body:not(.portal-opened) .site-footer {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+  transform: translateY(24px);
+}
+
+body.portal-opened .intro-portal {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transform: scale(1.025);
+}
+
+body.portal-opened .site-header,
+body.portal-opened #mainContent,
+body.portal-opened .site-footer {
+  opacity: 1;
+  visibility: visible;
+  pointer-events: auto;
+  transform: translateY(0);
+  transition: opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+              transform 0.85s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
 /* --- 5. Header / Menu Fixo Superior --- */
 .site-header {
   position: fixed;
@@ -349,6 +602,51 @@ textarea:focus-visible {
 [data-theme="brand"] .nav-link.active {
   background-color: var(--color-primary);
   color: #FFFFFF;
+}
+
+/* Botão de Retorno à Tela da Estrela */
+.portal-return-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.42rem 0.85rem;
+  background-color: transparent;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-pill);
+  color: var(--color-text);
+  font-family: var(--font-tech);
+  font-size: 0.75rem;
+  font-weight: 600;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.portal-return-btn:hover {
+  background-color: var(--color-surface);
+  border-color: var(--color-primary);
+  color: var(--color-highlight);
+  transform: translateY(-1px);
+}
+
+.portal-star-icon {
+  font-size: 0.85rem;
+  color: var(--color-primary);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.portal-return-btn:hover .portal-star-icon {
+  transform: scale(1.25) rotate(45deg);
+}
+
+@media (max-width: 600px) {
+  .portal-btn-text {
+    display: none;
+  }
+  .portal-return-btn {
+    padding: 0.42rem 0.6rem;
+  }
 }
 
 /* Alternador de Tema */

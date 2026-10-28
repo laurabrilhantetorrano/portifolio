@@ -9,10 +9,10 @@
   <!-- Favicon SVG com monograma gótico -->
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><rect width=%22100%22 height=%22100%22 rx=%2222%22 fill=%22%23120713%22/><text y=%2268%22 x=%2250%22 font-size=%2260%22 font-family=%22serif%22 font-weight=%22bold%22 text-anchor=%22middle%22 fill=%22%23FF63F8%22>𝕷</text></svg>">
 
-  <!-- Google Fonts: Syne (editorial display), UnifrakturMaguntia (gótica/blackletter), Plus Jakarta Sans (leitura limpa), Space Grotesk (metadados tech) -->
+  <!-- Google Fonts: Cormorant Garamond (sofisticação editorial e intimista), Syne, UnifrakturMaguntia, Plus Jakarta Sans, Space Grotesk -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@700;800&family=UnifrakturMaguntia&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Plus+Jakarta+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;0,800;1,400&family=Space+Grotesk:wght@400;500;600;700&family=Syne:wght@700;800&family=UnifrakturMaguntia&display=swap" rel="stylesheet">
 
   <link rel="stylesheet" href="style.css">
 </head>
@@ -27,6 +27,56 @@
   <!-- Atmosfera Sutil de Fundo -->
   <div class="ambient-grid" aria-hidden="true"></div>
   <div class="ambient-glow" aria-hidden="true"></div>
+
+  <!-- ========================================================================
+       TELA INICIAL EXCLUSIVA: PORTAL INTIMISTA COM ESTRELA
+       Exibe exclusivamente o nome LAURA BRILHANTE TORRANO e a estrela interativa.
+       Nenhuma outra seção, menu ou funcionalidade aparece antes dessa interação.
+       ======================================================================== -->
+  <section class="intro-portal" id="introPortal" aria-label="Tela Inicial - Laura Brilhante Torrano">
+    <div class="intro-backdrop-light" aria-hidden="true"></div>
+    <div class="intro-star-dust" aria-hidden="true"></div>
+
+    <div class="intro-center-stage">
+      <!-- O grande destaque visual: Nome Completo com tipografia sofisticada e delicada -->
+      <h1 class="intro-name-display" id="introNameDisplay">
+        <span class="name-part">LAURA</span>
+        <span class="name-part">BRILHANTE</span>
+        <span class="name-part">TORRANO</span>
+      </h1>
+
+      <!-- Único elemento interativo: A Estrela Delicada -->
+      <div class="intro-star-wrapper">
+        <button class="intro-star-trigger" id="introStarBtn" type="button" aria-label="Acessar o portfólio de Laura Brilhante Torrano" title="Tocar na estrela para descobrir">
+          <svg class="star-svg-delicate" viewBox="0 0 72 72" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <defs>
+              <radialGradient id="starGlow" cx="50%" cy="50%" r="50%">
+                <stop offset="0%" stop-color="#FFE0E8" stop-opacity="0.95"/>
+                <stop offset="40%" stop-color="#FF63F8" stop-opacity="0.55"/>
+                <stop offset="75%" stop-color="#FF6B8C" stop-opacity="0.18"/>
+                <stop offset="100%" stop-color="#FF63F8" stop-opacity="0"/>
+              </radialGradient>
+              <filter id="starSoftBloom" x="-40%" y="-40%" width="180%" height="180%">
+                <feGaussianBlur stdDeviation="3" result="blur"/>
+                <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+              </filter>
+            </defs>
+            <!-- Aura suave de brilho difuso -->
+            <circle class="star-ambient-aura" cx="36" cy="36" r="32" fill="url(#starGlow)"/>
+            <!-- Estrela esbelta de 4 pontas celestiais -->
+            <path class="star-body" d="M36 4 C36 21 44 29 68 36 C44 43 36 51 36 68 C36 51 28 43 4 36 C28 29 36 21 36 4 Z" fill="#FFE0E8" filter="url(#starSoftBloom)"/>
+            <!-- Feixes cruzados ultra-finos em marfim -->
+            <line x1="36" y1="16" x2="36" y2="56" stroke="#FFFFFF" stroke-width="0.8" stroke-linecap="round" stroke-opacity="0.75"/>
+            <line x1="16" y1="36" x2="56" y2="36" stroke="#FFFFFF" stroke-width="0.8" stroke-linecap="round" stroke-opacity="0.75"/>
+            <!-- Ponto central de luz pura -->
+            <circle class="star-nucleus" cx="36" cy="36" r="2.2" fill="#FFFFFF"/>
+          </svg>
+          <span class="star-pulse-ring" aria-hidden="true"></span>
+        </button>
+        <span class="intro-star-hint" aria-hidden="true">Descobrir</span>
+      </div>
+    </div>
+  </section>
 
   <!-- ========================================================================
        HEADER / MENU FIXO SUPERIOR
@@ -48,7 +98,7 @@
         <span class="status-time" id="liveClock">--:--:-- BRT</span>
       </div>
 
-      <!-- Ações: Navegação Desktop + Alternador de Tema -->
+      <!-- Ações: Navegação Desktop + Retorno ao Portal + Alternador de Tema -->
       <div class="header-actions">
         <nav class="nav-menu" id="navMenu" aria-label="Navegação principal">
           <a href="#hero" class="nav-link active" data-page="hero" id="navHero">Início</a>
@@ -57,6 +107,12 @@
           <a href="#habilidades" class="nav-link" data-page="habilidades" id="navHabilidades">Habilidades</a>
           <a href="#contato" class="nav-link" data-page="contato" id="navContato">Contato</a>
         </nav>
+
+        <!-- Botão para revisitar a tela da estrela -->
+        <button class="portal-return-btn" id="portalReturnBtn" type="button" aria-label="Voltar para a tela inicial da estrela" title="Voltar à tela da estrela">
+          <span class="portal-star-icon" aria-hidden="true">✦</span>
+          <span class="portal-btn-text">Portal</span>
+        </button>
 
         <!-- Alternador de Tema Claro / Escuro -->
         <button class="theme-toggle-btn" id="themeToggleBtn" type="button" aria-label="Alternar tema claro/escuro" title="Alternar tema">

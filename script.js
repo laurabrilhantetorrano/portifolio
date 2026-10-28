@@ -132,103 +132,101 @@ function initNightSkyStarDraw() {
   }
 
   /* ==========================================================================
-     RECONHECIMENTO EFETIVO DA ESTRELA DE 5 PONTAS
-     Avalia:
-     1. Passagem pelos 5 vértices da estrela (ordem clássica cruzada ou contorno)
-     2. Análise de curvas e pontas radiais com cruzamentos de reta
-     3. Fechamento do traçado próximo ao início
+     RECONHECIMENTO NATURAL, SIMPLES E GENEROSO DA ESTRELA DE 5 PONTAS
+     Aceita imperfeições, traços tortos, qualquer tamanho natural e posição livre.
+     Não exige precisão milimétrica nem simetria perfeita.
      ========================================================================== */
-  function evaluateStroke(points) {
-    if (!points || points.length < 8) return 0;
+  function evaluateStroke(points, isFinal = false) {
+    if (!points || points.length < 6) return 0;
 
-    // A. Avaliação por Vértices Alvo da Constelação
-    const hitRadius = Math.max(48, Math.min(guideRadius * 0.45, 68));
-    const hitSequence = [];
-    let lastHit = -1;
-
-    points.forEach((pt) => {
-      guidePoints.forEach((g) => {
-        const dx = pt.x - g.x;
-        const dy = pt.y - g.y;
-        if (dx * dx + dy * dy < hitRadius * hitRadius) {
-          if (lastHit !== g.id) {
-            hitSequence.push(g.id);
-            lastHit = g.id;
-          }
-        }
-      });
-    });
-
-    let validTransitions = 0;
-    const uniqueVisited = new Set();
-
-    for (let i = 0; i < hitSequence.length - 1; i++) {
-      const from = hitSequence[i];
-      const to = hitSequence[i + 1];
-      const step = (to - from + 5) % 5;
-      uniqueVisited.add(from);
-      uniqueVisited.add(to);
-
-      if (step === 2 || step === 3 || step === 1 || step === 4) {
-        validTransitions++;
-      }
-    }
-
-    if (uniqueVisited.size >= 3) {
-      if (uniqueVisited.size === 5 && hitSequence.length >= 5) {
-        const isClosed = hitSequence[hitSequence.length - 1] === hitSequence[0] ||
-                         Math.hypot(points[points.length - 1].x - points[0].x, points[points.length - 1].y - points[0].y) < hitRadius * 1.5;
-        if (isClosed && validTransitions >= 4) {
-          return 100;
-        }
-        return 85;
-      }
-      return Math.min(80, uniqueVisited.size * 18);
-    }
-
-    // B. Avaliação Geométrica Livre (desenho livre em qualquer área)
+    // 1. Dimensões e comprimento total do traçado
     let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
-    let sumX = 0, sumY = 0;
-    points.forEach(p => {
+    let totalLength = 0;
+
+    for (let i = 0; i < points.length; i++) {
+      const p = points[i];
       if (p.x < minX) minX = p.x;
       if (p.x > maxX) maxX = p.x;
       if (p.y < minY) minY = p.y;
       if (p.y > maxY) maxY = p.y;
-      sumX += p.x;
-      sumY += p.y;
-    });
+      if (i > 0) {
+        totalLength += Math.hypot(p.x - points[i - 1].x, p.y - points[i - 1].y);
+      }
+    }
 
     const w = maxX - minX;
     const h = maxY - minY;
-    if (w < 60 || h < 60) return Math.min(20, Math.floor(points.length / 2));
+    const size = Math.max(w, h);
 
-    const cx = sumX / points.length;
-    const cy = sumY / points.length;
-    const avgR = (w + h) / 4;
+    // Evita apenas toques acidentais insignificantes (< 25px)
+    if (size < 25 || totalLength < 50) {
+      return Math.min(10, points.length);
+    }
 
-    // Detecta picos radiais (as 5 pontas externas)
-    const radii = points.map(p => Math.hypot(p.x - cx, p.y - cy));
+    // 2. Amostragem suave para ignorar micro-tremores
+    const sampleDistance = Math.max(5, Math.min(14, totalLength / 35));
+    const sampled = [points[0]];
+    let distAccum = 0;
+
+    for (let i = 1; i < points.length; i++) {
+      const d = Math.hypot(points[i].x - points[i - 1].x, points[i].y - points[i - 1].y);
+      distAccum += d;
+      if (distAccum >= sampleDistance) {
+        sampled.push(points[i]);
+        distAccum = 0;
+      }
+    }
+    if (sampled.length < 5) sampled.push(points[points.length - 1]);
+
+    const cx = (minX + maxX) / 2;
+    const cy = (minY + maxY) / 2;
+    const minCornerDist = size * 0.15;
+
+    // 3. Detecção de cantos (mudanças nítidas de direção / pontas)
+    const corners = [];
+    for (let i = 1; i < sampled.length - 1; i++) {
+      const pPrev = sampled[i - 1];
+      const pCurr = sampled[i];
+      const pNext = sampled[i + 1];
+
+      const v1x = pCurr.x - pPrev.x;
+      const v1y = pCurr.y - pPrev.y;
+      const v2x = pNext.x - pCurr.x;
+      const v2y = pNext.y - pCurr.y;
+
+      const mag1 = Math.hypot(v1x, v1y);
+      const mag2 = Math.hypot(v2x, v2y);
+
+      if (mag1 > 0 && mag2 > 0) {
+        const dot = (v1x * v2x + v1y * v2y) / (mag1 * mag2);
+        // dot < 0.72 aceita curvas e pontas humanas de estrela
+        if (dot < 0.72) {
+          const isFar = corners.every(c => Math.hypot(c.x - pCurr.x, c.y - pCurr.y) > minCornerDist);
+          if (isFar) {
+            corners.push(pCurr);
+          }
+        }
+      }
+    }
+
+    // 4. Detecção de picos radiais (pontas mais afastadas do centro da estrela)
+    const radii = sampled.map(p => Math.hypot(p.x - cx, p.y - cy));
+    const avgR = radii.reduce((a, b) => a + b, 0) / radii.length;
     const peaks = [];
-    for (let i = 2; i < radii.length - 2; i++) {
-      if (radii[i] > avgR * 0.95 &&
-          radii[i] > radii[i - 1] && radii[i] > radii[i - 2] &&
-          radii[i] > radii[i + 1] && radii[i] > radii[i + 2]) {
-        const pt = points[i];
-        const tooClose = peaks.some(pk => Math.hypot(pk.x - pt.x, pk.y - pt.y) < avgR * 0.45);
-        if (!tooClose) {
+
+    for (let i = 1; i < radii.length - 1; i++) {
+      if (radii[i] > avgR * 0.82 && radii[i] >= radii[i - 1] && radii[i] >= radii[i + 1]) {
+        const pt = sampled[i];
+        const isFar = peaks.every(pk => Math.hypot(pk.x - pt.x, pk.y - pt.y) > minCornerDist);
+        if (isFar) {
           peaks.push(pt);
         }
       }
     }
 
-    // Calcula cruzamentos de retas (auto-interseções)
-    let intersections = 0;
-    const sampleStep = Math.max(1, Math.floor(points.length / 45));
-    const sampled = [];
-    for (let i = 0; i < points.length; i += sampleStep) {
-      sampled.push(points[i]);
-    }
+    const tipCount = Math.max(corners.length, peaks.length);
 
+    // 5. Cruzamentos de retas (auto-interseções da estrela contínua)
     function doIntersect(p1, p2, p3, p4) {
       function ccw(A, B, C) {
         return (C.y - A.y) * (B.x - A.x) > (B.y - A.y) * (C.x - A.x);
@@ -236,26 +234,53 @@ function initNightSkyStarDraw() {
       return ccw(p1, p3, p4) !== ccw(p2, p3, p4) && ccw(p1, p2, p3) !== ccw(p1, p2, p4);
     }
 
-    for (let i = 0; i < sampled.length - 3; i++) {
-      for (let j = i + 2; j < sampled.length - 1; j++) {
-        if (Math.abs(i - j) > 1 && doIntersect(sampled[i], sampled[i + 1], sampled[j], sampled[j + 1])) {
+    let intersections = 0;
+    const stepCross = Math.max(1, Math.floor(sampled.length / 24));
+    const sub = [];
+    for (let i = 0; i < sampled.length; i += stepCross) {
+      sub.push(sampled[i]);
+    }
+
+    for (let i = 0; i < sub.length - 3; i++) {
+      for (let j = i + 2; j < sub.length - 1; j++) {
+        if (Math.abs(i - j) > 1 && doIntersect(sub[i], sub[i + 1], sub[j], sub[j + 1])) {
           intersections++;
         }
       }
     }
 
-    const distClose = Math.hypot(points[points.length - 1].x - points[0].x, points[points.length - 1].y - points[0].y);
-    const isClosed = distClose < Math.max(w, h) * 0.38;
+    // 6. Proximidade de fechamento entre o início e o fim
+    const startPt = points[0];
+    const endPt = points[points.length - 1];
+    const closeDist = Math.hypot(endPt.x - startPt.x, endPt.y - startPt.y);
+    const isClosed = closeDist < size * 0.75; // Altamente tolerante para fechamento natural
 
-    if (peaks.length >= 5 && isClosed && (intersections >= 3 || validTransitions >= 4)) {
-      return 100;
+    // Condição de 100%:
+    // A pessoa desenhou as pontas de uma estrela (4 a 8 cantos/picos) e fechou o percurso
+    const hasEnoughTips = tipCount >= 4 && tipCount <= 8;
+    const hasStarCharacteristics = intersections >= 1 || tipCount >= 5;
+
+    if (hasEnoughTips && hasStarCharacteristics) {
+      if (isClosed || isFinal) {
+        return 100;
+      }
+      return 90;
     }
-    if (peaks.length >= 5) return 80;
-    if (peaks.length === 4) return 65;
-    if (peaks.length === 3) return 45;
-    if (peaks.length === 2) return 30;
 
-    return Math.min(25, points.length);
+    // Se o usuário soltou o cursor/dedo e o desenho tem a forma de uma estrela:
+    if (isFinal) {
+      if ((tipCount >= 4 && isClosed) || (tipCount >= 5 && intersections >= 1) || (tipCount >= 4 && intersections >= 1)) {
+        return 100;
+      }
+    }
+
+    // Progresso em tempo real durante o traçado
+    if (tipCount >= 4) return 80;
+    if (tipCount >= 3) return 60;
+    if (tipCount >= 2) return 40;
+    if (tipCount >= 1) return 20;
+
+    return Math.min(18, Math.floor(totalLength / 20));
   }
 
   function celebrate100Percent() {
@@ -269,8 +294,8 @@ function initNightSkyStarDraw() {
     lockedStarStroke = [...currentStroke];
     currentStroke = [];
 
-    // Centro da estrela para onda de luz e partículas
-    let starCenter = guideCenter;
+    // Centro dinâmico da estrela desenhada pelo próprio usuário
+    let starCenter = { x: width / 2, y: height / 2 };
     if (lockedStarStroke.length > 0) {
       let sx = 0, sy = 0;
       lockedStarStroke.forEach(p => { sx += p.x; sy += p.y; });
@@ -281,11 +306,11 @@ function initNightSkyStarDraw() {
       x: starCenter.x,
       y: starCenter.y,
       radius: 12,
-      maxRadius: Math.max(width, height) * 0.8,
+      maxRadius: Math.max(width, height) * 0.85,
       alpha: 0.85
     };
 
-    // Chuva de poeira estelar suave
+    // Chuva delicada de poeira estelar suave
     spawnSparks(starCenter.x, starCenter.y, 75, true);
 
     // Revela suavemente o nome central com animação
@@ -322,11 +347,11 @@ function initNightSkyStarDraw() {
     const lastPt = currentStroke[currentStroke.length - 1];
     const dist = Math.hypot(x - lastPt.x, y - lastPt.y);
 
-    if (dist > 4) {
+    if (dist > 3) {
       currentStroke.push({ x, y, time: performance.now() });
       spawnSparks(x, y, 2);
 
-      const prog = evaluateStroke(currentStroke);
+      const prog = evaluateStroke(currentStroke, false);
       if (prog > currentProgress) {
         currentProgress = prog;
         progressVal.textContent = `${currentProgress}%`;
@@ -342,16 +367,23 @@ function initNightSkyStarDraw() {
     if (!isDrawing) return;
     isDrawing = false;
 
+    // Avaliação generosa e natural do traçado completo ao soltar
+    const finalProg = evaluateStroke(currentStroke, true);
+    if (finalProg > currentProgress) {
+      currentProgress = finalProg;
+      progressVal.textContent = `${currentProgress}%`;
+    }
+
     if (currentProgress >= 100) {
       celebrate100Percent();
     } else {
-      // Traçado incompleto ou não reconhecido: desvanece suavemente
+      // Traçado incompleto: desvanece suavemente e permite tentar novamente
       strokeFading = true;
       setTimeout(() => {
         if (!isDrawing && !isCompleted) {
           instructionBox.classList.remove('is-hidden');
         }
-      }, 1100);
+      }, 1000);
     }
   }
 
@@ -406,7 +438,7 @@ function initNightSkyStarDraw() {
 
     ctx.clearRect(0, 0, width, height);
 
-    // 1. Estrelas do Céu Noturno
+    // 1. Estrelas do Céu Noturno (Céu limpo, natural e infinito)
     backgroundStars.forEach((s) => {
       const alpha = Math.max(0.1, Math.min(1, s.baseAlpha + Math.sin(now * 0.001 * s.twinkleSpeed + s.twinklePhase) * 0.28));
       ctx.fillStyle = s.color;
@@ -426,24 +458,6 @@ function initNightSkyStarDraw() {
         ctx.stroke();
       }
     });
-
-    // 2. Guia de Constelação Sutil no Centro
-    if (!isCompleted) {
-      const constAlpha = Math.max(0.15, Math.min(0.45, 0.28 + Math.sin(now * 0.0015) * 0.1));
-      guidePoints.forEach((g) => {
-        ctx.fillStyle = '#FFE0E8';
-        ctx.globalAlpha = constAlpha;
-        ctx.beginPath();
-        ctx.arc(g.x, g.y, 2.5, 0, Math.PI * 2);
-        ctx.fill();
-
-        ctx.strokeStyle = 'rgba(255, 224, 232, 0.25)';
-        ctx.lineWidth = 1;
-        ctx.beginPath();
-        ctx.arc(g.x, g.y, 6, 0, Math.PI * 2);
-        ctx.stroke();
-      });
-    }
 
     // 3. Onda de Luz Celestial (Ripple aos 100%)
     if (celestialRipple) {
